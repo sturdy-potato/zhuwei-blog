@@ -1,0 +1,88 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import SeoHead from "../components/SeoHead.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  activePath?: string;
+  searchPlaceholder?: string;
+  canonical?: string;
+  type?: "website" | "article";
+}
+
+const {
+  title,
+  description,
+  activePath = "/",
+  searchPlaceholder,
+  canonical,
+  type = "website"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <SeoHead title={title} description={description} canonical={canonical} type={type} />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="reading-progress" data-reading-progress></div>
+      <Header activePath={activePath} searchPlaceholder={searchPlaceholder} />
+      <slot />
+      <Footer />
+    </div>
+
+    <script>
+      // 中文注释：统一处理阅读进度、搜索过滤和顶部标签激活，避免每个页面重复绑定脚本。
+      const progressEl = document.querySelector("[data-reading-progress]");
+      const updateProgress = () => {
+        if (!progressEl) return;
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        progressEl instanceof HTMLElement && (progressEl.style.width = `${progress}%`);
+      };
+
+      const searchInput = document.querySelector("[data-search-input]");
+      const searchableCards = [...document.querySelectorAll("[data-tags]")];
+
+      searchInput instanceof HTMLInputElement && searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim().toLowerCase();
+        searchableCards.forEach((card) => {
+          const text = card.textContent?.toLowerCase() ?? "";
+          const matched = !query || text.includes(query);
+          if (card instanceof HTMLElement) {
+            card.style.opacity = matched ? "1" : "0.35";
+            card.style.transform = matched ? "scale(1)" : "scale(0.98)";
+          }
+        });
+      });
+
+      const liveVisitorEl = document.querySelector("[data-live-visitors]");
+      if (liveVisitorEl) {
+        let currentVal = Number((liveVisitorEl.textContent || "2481").replace(/,/g, ""));
+        window.setInterval(() => {
+          currentVal += Math.floor(Math.random() * 5) - 2;
+          if (currentVal < 2400) currentVal = 2400;
+          liveVisitorEl.textContent = currentVal.toLocaleString("zh-CN");
+        }, 3000);
+      }
+
+      updateProgress();
+      window.addEventListener("scroll", updateProgress);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, formatNumber, getPostSlug } from "../lib/blog";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  isNew?: boolean;
+}
+
+const { post, isNew = false } = Astro.props;
+const { data } = post;
+---
+
+<a class="post-card" data-color={data.color} href={`/blog/${getPostSlug(post)}/`} data-tags={data.tags.join(",").toLowerCase()}>
+  {isNew && <span class="post-new">NEW</span>}
+  <div class:list={["post-icon-wrap", data.color]}>{data.icon}</div>
+  <div class="post-info">
+    <div class="post-info-meta">
+      <span class:list={["post-tag", data.color]}>{data.category}</span>
+      <span class="post-date">{formatDate(data.pubDate)}</span>
+    </div>
+    <div class="post-title">{data.title}</div>
+    <div class="post-excerpt">{data.excerpt}</div>
+    <div class="post-footer">
+      <span class="post-stat">👁 {formatNumber(data.views)}</span>
+      <span class="post-stat">💬 {formatNumber(data.comments)}</span>
+      <span class="post-stat">⏱ {data.minutes} min</span>
+    </div>
+  </div>
+</a>

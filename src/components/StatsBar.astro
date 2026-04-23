@@ -1,0 +1,20 @@
+---
+interface Props {
+  totalPosts: number;
+  totalWords: number;
+  totalViews: number;
+}
+
+const { totalPosts, totalWords, totalViews } = Astro.props;
+
+const todayVisitors = 2481;
+---
+
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item"><span class="stat-label">文章总数</span><span class="stat-val">{totalPosts}</span></div>
+    <div class="stat-item"><span class="stat-label">总字数</span><span class="stat-val">{totalWords.toLocaleString("zh-CN")}</span></div>
+    <div class="stat-item"><span class="stat-label">总阅读量</span><span class="stat-val">{totalViews.toLocaleString("zh-CN")}</span><span class="stat-up">▲ 5.1%</span></div>
+    <div class="stat-item"><span class="stat-label">今日访客</span><span class="stat-val" data-live-visitors>{todayVisitors.toLocaleString("zh-CN")}</span><span class="stat-up">●</span></div>
+  </div>
+</div>

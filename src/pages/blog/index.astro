@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import { getPublishedPosts } from "../../lib/blog";
+
+const posts = await getPublishedPosts();
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+---
+
+<BaseLayout
+  title="博客归档"
+  description="按时间线浏览 ZhuWei 的全部文章，涵盖前端开发、系统设计、工程化与读书思考。"
+  activePath="/blog/"
+  canonical="/blog/"
+>
+  <main class="page-main">
+    <div class="home-grid">
+      <section class="archive-shell">
+        <header class="archive-head">
+          <h1 class="archive-title">博客归档</h1>
+          <p class="archive-intro">这里保留了全部公开文章。页面结构延续首页的卡片式信息密度，但把重点放在可检索、可归档、可持续更新上。</p>
+          <div class="archive-meta">共 {posts.length} 篇文章</div>
+        </header>
+        <div class="post-grid">
+          {posts.map((post) => <PostCard post={post} />)}
+        </div>
+      </section>
+      <Sidebar posts={posts} tags={tags} />
+    </div>
+  </main>
+</BaseLayout>

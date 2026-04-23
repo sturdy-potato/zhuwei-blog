@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, getPostSlug } from "../lib/blog";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { data } = post;
+---
+
+<a class="featured-post" href={`/blog/${getPostSlug(post)}/`}>
+  {data.pinned && <span class="featured-badge">PINNED</span>}
+  <div class="featured-cover">
+    <div class="featured-cover-art"></div>
+    <div class="featured-cover-text">&lt;/&gt;</div>
+  </div>
+  <div class="featured-body">
+    <div class="featured-meta">
+      <span class:list={["post-tag", data.color]}>{data.category}</span>
+      <span class="post-date">{formatDate(data.pubDate)}</span>
+    </div>
+    <div class="featured-title">{data.title}</div>
+    <div class="featured-excerpt">{data.excerpt}</div>
+  </div>
+</a>

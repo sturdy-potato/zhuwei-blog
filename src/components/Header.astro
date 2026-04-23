@@ -1,0 +1,38 @@
+---
+interface Props {
+  activePath?: string;
+  searchPlaceholder?: string;
+}
+
+const { activePath = "/", searchPlaceholder = "搜索文章…" } = Astro.props;
+
+const navItems = [
+  { href: "/", label: "首页" },
+  { href: "/blog/", label: "博客归档" },
+  { href: "/tags/react/", label: "前端开发" },
+  { href: "/tags/系统设计/", label: "系统设计" },
+  { href: "/tags/工程化/", label: "开源项目" },
+  { href: "/tags/读书/", label: "读书笔记" },
+  { href: "/about/", label: "关于" }
+];
+---
+
+<header class="site-header">
+  <a class="logo" href="/">
+    <span class="logo-dot"></span>
+    ZHUWEI<span style="color:var(--muted);">.BLOG</span>
+  </a>
+  <ul class="nav-links">
+    {navItems.map((item) => (
+      <li>
+        <a href={item.href} class={activePath === item.href ? "active" : undefined}>{item.label}</a>
+      </li>
+    ))}
+  </ul>
+  <div class="header-right">
+    <label class="search-bar">
+      <span class="search-icon">⌕</span>
+      <input type="text" placeholder={searchPlaceholder} data-search-input />
+    </label>
+  </div>
+</header>

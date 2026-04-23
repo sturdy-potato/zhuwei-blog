@@ -1,0 +1,9 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F5F6F8"/>
+  <rect x="80" y="80" width="1040" height="470" rx="28" fill="white" stroke="rgba(0,0,0,0.08)"/>
+  <circle cx="146" cy="146" r="18" fill="#2563EB"/>
+  <text x="182" y="154" fill="#111318" font-size="34" font-family="Space Mono, monospace" font-weight="700">ZHUWEI.BLOG</text>
+  <text x="120" y="270" fill="#111318" font-size="76" font-family="Noto Sans SC, sans-serif" font-weight="700">代码、设计与</text>
+  <text x="120" y="360" fill="#2563EB" font-size="92" font-family="Noto Sans SC, sans-serif" font-weight="700">独立思考</text>
+  <text x="120" y="438" fill="#7C8494" font-size="28" font-family="Noto Sans SC, sans-serif">Astro + Cloudflare 驱动的内容型技术博客</text>
+</svg>

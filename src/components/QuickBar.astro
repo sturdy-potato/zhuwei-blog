@@ -1,0 +1,40 @@
+---
+import { slugifyTag } from "../lib/blog";
+
+interface Props {
+  tags: string[];
+  activeTag?: string;
+}
+
+const { tags, activeTag = "全部" } = Astro.props;
+
+const iconMap = new Map<string, string>([
+  ["全部", "◈"],
+  ["React", "⚛️"],
+  ["Vue", "🟢"],
+  ["TypeScript", "🔷"],
+  ["Node.js", "⚙️"],
+  ["系统设计", "🏗️"],
+  ["DevOps", "🐳"],
+  ["读书", "📖"],
+  ["思考", "💡"],
+  ["工程化", "🔧"]
+]);
+
+const allTags = ["全部", ...tags];
+---
+
+<div class="quick-bar">
+  <div class="quick-bar-inner">
+    {allTags.map((tag) => (
+      <a
+        class:list={["quick-tag", activeTag === tag && "on"]}
+        href={tag === "全部" ? "/" : `/tags/${slugifyTag(tag)}/`}
+        data-filter={tag}
+      >
+        <span class="qtag-icon">{iconMap.get(tag) ?? "•"}</span>
+        {tag}
+      </a>
+    ))}
+  </div>
+</div>

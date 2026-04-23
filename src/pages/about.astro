@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+import { getPublishedPosts } from "../lib/blog";
+
+const posts = await getPublishedPosts();
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+---
+
+<BaseLayout
+  title="关于"
+  description="关于 ZhuWei、博客写作方向与后续 Cloudflare + Astro 技术栈规划。"
+  activePath="/about/"
+  canonical="/about/"
+>
+  <main class="page-main">
+    <div class="home-grid">
+      <section class="article-shell">
+        <header class="article-head">
+          <div class="article-meta">
+            <span class="post-tag cyan">关于</span>
+            <span class="post-date">持续更新</span>
+          </div>
+          <h1 class="article-title">关于这个博客</h1>
+          <p class="article-summary">这个站点现在已经不是单纯的静态 HTML，而是 Astro 驱动的内容型博客骨架。视觉仍然保持你原来那份设计：理性、密集、偏产品化，而不是通用模板感。</p>
+        </header>
+        <div class="article-content">
+          <p>当前技术栈选择是 <code>Astro + Cloudflare Workers</code>。这样做的原因很直接：博客页面可以预渲染成 SEO 友好的 HTML，同时以后要扩展接口时，也能继续使用同一套 Cloudflare 部署体系。</p>
+          <p>后续如果你要加留言、点赞、订阅或者简单后台，可以优先在 <code>/api/*</code> 上接 Hono，再按需引入 D1、R2 或 KV，而不用推翻前台结构。</p>
+          <blockquote>这套骨架的重点不是“炫技术”，而是先把内容发布、收录和后续扩展的地基打稳。</blockquote>
+        </div>
+      </section>
+      <Sidebar posts={posts} tags={tags} />
+    </div>
+  </main>
+</BaseLayout>

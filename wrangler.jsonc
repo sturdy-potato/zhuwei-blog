@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "my-blog-static",
+  // 中文注释：当前走 Cloudflare Pages 部署，因此这里只保留 Pages 可识别的基础配置。
+  "compatibility_date": "2026-04-23",
+  // 中文注释：补齐 Pages 构建输出目录，便于直接使用 wrangler pages deploy。
+  "pages_build_output_dir": "./dist"
+}

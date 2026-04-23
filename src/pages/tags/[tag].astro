@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import { getPublishedPosts } from "../../lib/blog";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+
+  return tags.map((tag) => ({
+    params: { tag: tag.toLowerCase() },
+    props: { tag }
+  }));
+}
+
+const { tag } = Astro.props;
+const posts = await getPublishedPosts();
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+const filteredPosts = posts.filter((post) => post.data.tags.some((item) => item.toLowerCase() === tag.toLowerCase()));
+---
+
+<BaseLayout
+  title={`${tag} 标签`}
+  description={`浏览所有与 ${tag} 相关的技术文章。`}
+  canonical={`/tags/${tag.toLowerCase()}/`}
+>
+  <main class="page-main">
+    <div class="home-grid">
+      <section class="archive-shell">
+        <header class="archive-head">
+          <h1 class="archive-title">标签：{tag}</h1>
+          <p class="archive-intro">这个标签页延续首页的 UI 风格，把筛选行为转成可索引的独立页面，方便搜索引擎收录。</p>
+          <div class="archive-meta">共 {filteredPosts.length} 篇相关文章</div>
+        </header>
+        <div class="post-grid">
+          {filteredPosts.map((post) => <PostCard post={post} />)}
+        </div>
+      </section>
+      <Sidebar posts={posts} tags={tags} />
+    </div>
+  </main>
+</BaseLayout>
