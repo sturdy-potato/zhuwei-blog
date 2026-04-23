@@ -1,0 +1,211 @@
+---
+interface Props {
+  slug: string;
+  initialViews: number;
+  initialLikes?: number;
+  initialComments: number;
+}
+
+const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
+---
+
+<section
+  class="engagement-shell"
+  data-post-engagement
+  data-slug={slug}
+  data-initial-views={initialViews}
+  data-initial-likes={initialLikes}
+  data-initial-comments={initialComments}
+>
+  <div class="engagement-summary">
+    <div class="engagement-stat">
+      <span class="engagement-label">阅读</span>
+      <strong data-stat-views>{initialViews.toLocaleString("zh-CN")}</strong>
+    </div>
+    <div class="engagement-stat">
+      <span class="engagement-label">点赞</span>
+      <strong data-stat-likes>{initialLikes.toLocaleString("zh-CN")}</strong>
+    </div>
+    <div class="engagement-stat">
+      <span class="engagement-label">评论</span>
+      <strong data-stat-comments>{initialComments.toLocaleString("zh-CN")}</strong>
+    </div>
+    <button class="engagement-like" type="button" data-like-button>👍 点赞这篇文章</button>
+  </div>
+
+  <div class="comment-shell">
+    <div class="comment-header">
+      <div>
+        <h2>留言 / 评论</h2>
+        <p>评论会直接显示在文章下方，建议保留真实可读的内容风格。</p>
+      </div>
+      <span class="comment-meta" data-comment-count-text>共 {initialComments} 条</span>
+    </div>
+
+    <form class="comment-form" data-comment-form>
+      <div class="comment-grid">
+        <label class="comment-field">
+          <span>昵称</span>
+          <input name="nickname" maxlength="24" placeholder="怎么称呼你？" required />
+        </label>
+      </div>
+      <label class="comment-field">
+        <span>内容</span>
+        <textarea name="content" rows="5" maxlength="500" placeholder="写下你的想法…" required></textarea>
+      </label>
+      <div class="comment-actions">
+        <span class="comment-feedback" data-comment-feedback></span>
+        <button type="submit" class="comment-submit">提交评论</button>
+      </div>
+    </form>
+
+    <div class="comment-list" data-comment-list>
+      <div class="comment-empty">还没有评论，欢迎留下第一条反馈。</div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // 中文注释：文章互动区统一在浏览器端拉取统计和评论，避免静态页面构建时依赖数据库。
+  const engagementRoots = document.querySelectorAll("[data-post-engagement]");
+
+  for (const root of engagementRoots) {
+    if (!(root instanceof HTMLElement)) continue;
+
+    const slug = root.dataset.slug;
+    const initialViews = Number(root.dataset.initialViews || "0");
+    const initialLikes = Number(root.dataset.initialLikes || "0");
+    const initialComments = Number(root.dataset.initialComments || "0");
+    if (!slug) continue;
+
+    const viewsEl = root.querySelector("[data-stat-views]");
+    const likesEl = root.querySelector("[data-stat-likes]");
+    const commentsEl = root.querySelector("[data-stat-comments]");
+    const commentCountTextEl = root.querySelector("[data-comment-count-text]");
+    const likeButton = root.querySelector("[data-like-button]");
+    const commentForm = root.querySelector("[data-comment-form]");
+    const feedbackEl = root.querySelector("[data-comment-feedback]");
+    const listEl = root.querySelector("[data-comment-list]");
+    const query = new URLSearchParams({
+      initialViews: String(initialViews),
+      initialLikes: String(initialLikes),
+      initialComments: String(initialComments)
+    });
+    const baseUrl = `/api/posts/${slug}`;
+
+    const updateMetrics = (metrics) => {
+      if (viewsEl) viewsEl.textContent = Number(metrics.views || 0).toLocaleString("zh-CN");
+      if (likesEl) likesEl.textContent = Number(metrics.likes || 0).toLocaleString("zh-CN");
+      if (commentsEl) commentsEl.textContent = Number(metrics.comment_count || 0).toLocaleString("zh-CN");
+      if (commentCountTextEl) commentCountTextEl.textContent = `共 ${Number(metrics.comment_count || 0)} 条`;
+    };
+
+    const renderComments = (comments) => {
+      if (!listEl) return;
+      if (!comments.length) {
+        listEl.innerHTML = '<div class="comment-empty">还没有评论，欢迎留下第一条反馈。</div>';
+        return;
+      }
+
+      listEl.innerHTML = comments
+        .map(
+          (comment) => `
+            <article class="comment-item">
+              <div class="comment-item-head">
+                <strong>${escapeHtml(comment.nickname)}</strong>
+                <span>${escapeHtml(comment.created_at)}</span>
+              </div>
+              <p>${escapeHtml(comment.content).replace(/\\n/g, "<br />")}</p>
+            </article>
+          `
+        )
+        .join("");
+    };
+
+    const loadStats = async () => {
+      const response = await fetch(`${baseUrl}/stats?${query.toString()}`);
+      if (!response.ok) return;
+      const result = await response.json();
+      if (result.ok) updateMetrics(result.metrics);
+    };
+
+    const loadComments = async () => {
+      const response = await fetch(`${baseUrl}/comments`);
+      if (!response.ok) return;
+      const result = await response.json();
+      if (result.ok) renderComments(result.comments || []);
+    };
+
+    fetch(`${baseUrl}/view`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ initialViews, initialLikes, initialComments })
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.ok) updateMetrics(result.metrics);
+      })
+      .catch(() => {});
+
+    likeButton instanceof HTMLButtonElement &&
+      likeButton.addEventListener("click", async () => {
+        likeButton.disabled = true;
+        const response = await fetch(`${baseUrl}/like`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ initialViews, initialLikes, initialComments })
+        });
+        const result = await response.json();
+        if (result.ok) {
+          updateMetrics(result.metrics);
+          likeButton.textContent = result.liked ? "✅ 已点赞" : "👍 点赞这篇文章";
+        } else {
+          likeButton.disabled = false;
+        }
+      });
+
+    commentForm instanceof HTMLFormElement &&
+      commentForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(commentForm);
+        const payload = {
+          nickname: String(formData.get("nickname") || ""),
+          content: String(formData.get("content") || ""),
+          initialViews,
+          initialLikes,
+          initialComments
+        };
+
+        if (feedbackEl) feedbackEl.textContent = "提交中…";
+
+        const response = await fetch(`${baseUrl}/comments`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+          if (feedbackEl) feedbackEl.textContent = result.message || "提交失败，请稍后再试";
+          return;
+        }
+
+        if (feedbackEl) feedbackEl.textContent = "评论已发布";
+        commentForm.reset();
+        updateMetrics(result.metrics);
+        await loadComments();
+      });
+
+    loadStats().catch(() => {});
+    loadComments().catch(() => {});
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+</script>

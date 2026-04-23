@@ -4,5 +4,17 @@
   // 中文注释：当前走 Cloudflare Pages 部署，因此这里只保留 Pages 可识别的基础配置。
   "compatibility_date": "2026-04-23",
   // 中文注释：补齐 Pages 构建输出目录，便于直接使用 wrangler pages deploy。
-  "pages_build_output_dir": "./dist"
+  "pages_build_output_dir": "./dist",
+  // 中文注释：博客互动数据统一存入独立 D1，避免后续评论、点赞、阅读统计分散到不同存储。
+  "d1_databases": [
+    {
+      "binding": "BLOG_DB",
+      "database_name": "zhuwei-blog",
+      "database_id": "0a1e15ba-48d6-4358-a986-bb84c4ff700b"
+    }
+  ],
+  "vars": {
+    // 中文注释：评论防刷先预留开关，后续接入 Turnstile 时只需要补密钥即可。
+    "TURNSTILE_ENABLED": "false"
+  }
 }

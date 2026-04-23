@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
+import PostEngagement from "../components/PostEngagement.astro";
 import Sidebar from "../components/Sidebar.astro";
 import { formatDate, getPostSlug, getPublishedPosts } from "../lib/blog";
 
@@ -45,6 +46,12 @@ const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
         <div class="article-content">
           <slot />
         </div>
+        <PostEngagement
+          slug={getPostSlug(post)}
+          initialViews={post.data.views}
+          initialLikes={0}
+          initialComments={post.data.comments}
+        />
         <nav class="article-nav">
           {prevPost ? (
             <a href={`/blog/${getPostSlug(prevPost)}/`}>
