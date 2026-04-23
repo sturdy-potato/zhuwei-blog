@@ -63,6 +63,173 @@
 - `blog.html` 是最初的单页视觉参考稿
   现在不参与正式路由，但后续做 UI 调整时可以参考它
 
+## 互动功能说明
+
+### 1. 当前已经实现的互动能力
+
+这个项目当前已经接入了三类互动功能：
+
+- 阅读统计
+- 点赞
+- 评论
+
+它们都挂在文章详情页底部的互动区里。
+
+### 2. 互动功能技术栈
+
+当前互动功能使用的是这套组合：
+
+- 前端页面：`Astro`
+- 部署平台：`Cloudflare Pages`
+- 服务端接口：`Cloudflare Pages Functions`
+- 数据库：`Cloudflare D1`
+- 前端互动组件：`src/components/PostEngagement.astro`
+
+也就是说：
+
+- 博客正文和 SEO 仍然是静态页面
+- 阅读、点赞、评论通过浏览器异步请求接口
+- 接口再把数据写入 D1
+
+这套方案的优点是：
+
+- SEO 不受影响
+- 页面首屏仍然是静态 HTML
+- 动态功能可以逐步扩展
+- 不需要单独再起一套后端服务
+
+### 3. 阅读统计原理
+
+阅读统计的接口是：
+
+- `functions/api/posts/[slug]/view.ts`
+
+工作方式：
+
+1. 用户打开文章页
+2. 前端组件自动请求 `POST /api/posts/:slug/view`
+3. 服务端根据 `IP + User-Agent` 生成访客指纹
+4. 如果同一个访客在 6 小时内重复打开同一篇文章，就不重复计数
+5. 如果没有命中去重条件，就给 `post_metrics.views` 加 1
+
+对应表：
+
+- `post_metrics`
+- `post_view_events`
+
+这样做的目的不是做“绝对精确”的统计，而是做一个足够稳定、不会明显灌水的阅读数。
+
+### 4. 点赞原理
+
+点赞接口是：
+
+- `functions/api/posts/[slug]/like.ts`
+
+工作方式：
+
+1. 用户点击点赞按钮
+2. 前端请求 `POST /api/posts/:slug/like`
+3. 服务端同样根据 `IP + User-Agent` 生成访客指纹
+4. `post_like_events` 表对 `post_slug + fingerprint` 做唯一约束
+5. 如果同一个访客已经点过这篇文章，就不会重复加赞
+6. 如果是第一次点赞，就给 `post_metrics.likes` 加 1
+
+对应表：
+
+- `post_metrics`
+- `post_like_events`
+
+这是一种轻量防重复方案，不追求账号级精确控制，但足够适合个人博客。
+
+### 5. 评论原理
+
+评论接口是：
+
+- `functions/api/posts/[slug]/comments.ts`
+
+工作方式：
+
+1. 用户在文章页填写昵称和评论内容
+2. 前端请求 `POST /api/posts/:slug/comments`
+3. 服务端做基础校验：
+   - 昵称长度
+   - 内容长度
+4. 校验通过后，把评论写入 `comments` 表
+5. 同时更新 `post_metrics.comment_count`
+6. 前端再请求 `GET /api/posts/:slug/comments` 拉取最新评论列表
+
+对应表：
+
+- `comments`
+- `post_metrics`
+
+当前版本里：
+
+- 评论默认直接公开
+- 没有开启审核流
+- 没有开启 Turnstile
+
+如果以后要升级，可以继续加：
+
+- 评论审核状态
+- 管理后台
+- 敏感词过滤
+- Turnstile 防刷
+
+### 6. 数据库结构
+
+数据库初始化 SQL 在：
+
+- `migrations/0001_engagement.sql`
+
+当前主要表：
+
+- `post_metrics`
+  每篇文章的聚合统计
+- `post_view_events`
+  阅读事件，用于时间窗口去重
+- `post_like_events`
+  点赞事件，用于唯一约束去重
+- `comments`
+  评论内容表
+
+### 7. 互动功能相关文件
+
+如果后面要让别的 AI 工具修改这套互动逻辑，重点会涉及这些文件：
+
+- `wrangler.jsonc`
+  D1 绑定和环境变量
+- `functions/_lib/db.ts`
+  数据库访问、指纹生成、JSON 响应、Turnstile 预留逻辑
+- `functions/api/posts/[slug]/stats.ts`
+  拉取文章统计
+- `functions/api/posts/[slug]/view.ts`
+  阅读统计写入
+- `functions/api/posts/[slug]/like.ts`
+  点赞写入
+- `functions/api/posts/[slug]/comments.ts`
+  评论读取和写入
+- `migrations/0001_engagement.sql`
+  数据表结构
+- `src/components/PostEngagement.astro`
+  前端互动组件
+- `src/layouts/PostLayout.astro`
+  文章页接入点
+- `src/styles/global.css`
+  互动区样式
+
+### 8. 修改互动功能时的注意事项
+
+- 不要只改前端，不改服务端接口
+  否则页面显示和数据库逻辑会脱节
+- 不要随意修改 `post_metrics` 的字段名
+  前后端接口都依赖这些字段
+- 不要删除指纹去重逻辑
+  否则阅读和点赞会非常容易被重复刷新灌水
+- 不要直接把原始 IP 存入数据库
+  当前是通过摘要指纹来做轻量去重
+- 如果要启用 Turnstile，优先复用 `functions/_lib/db.ts` 里已经预留的校验入口
+
 ## 新增文章指南
 
 ### 1. 新增文章时要动哪些文件
