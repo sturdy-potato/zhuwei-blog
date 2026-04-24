@@ -4,7 +4,6 @@ import Sidebar from "../components/Sidebar.astro";
 import { getPublishedPosts } from "../lib/blog";
 
 const posts = await getPublishedPosts();
-const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 ---
 
 <BaseLayout
@@ -30,7 +29,7 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
           <blockquote>这套骨架的重点不是“炫技术”，而是先把内容发布、收录和后续扩展的地基打稳。</blockquote>
         </div>
       </section>
-      <Sidebar posts={posts} tags={tags} />
+      <Sidebar posts={posts} />
     </div>
   </main>
 </BaseLayout>

@@ -21,7 +21,8 @@ const iconMap = new Map<string, string>([
   ["工程化", "🔧"]
 ]);
 
-const allTags = ["全部", ...tags];
+const preferredTags = ["全部", "系统设计", "微前端", "工程化", "TypeScript", "React", "性能优化", "DevOps", "Docker", "K8s", "读书", "思考", "Web 安全"];
+const allTags = [...new Set([...preferredTags, ...tags])];
 ---
 
 <div class="quick-bar">

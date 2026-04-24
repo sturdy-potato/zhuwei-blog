@@ -67,7 +67,7 @@ const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
           ) : <div></div>}
         </nav>
       </article>
-      <Sidebar posts={posts} tags={allTags} />
+      <Sidebar posts={posts} tags={allTags} showTagCloud={true} showTimeline={true} />
     </div>
   </main>
 </BaseLayout>

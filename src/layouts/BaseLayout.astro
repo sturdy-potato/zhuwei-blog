@@ -81,6 +81,16 @@ const {
         }, 3000);
       }
 
+      const menuToggle = document.querySelector("[data-menu-toggle]");
+      const navLinks = document.querySelector("[data-nav-links]");
+      if (menuToggle instanceof HTMLButtonElement && navLinks instanceof HTMLElement) {
+        menuToggle.addEventListener("click", () => {
+          const expanded = menuToggle.getAttribute("aria-expanded") === "true";
+          menuToggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+          navLinks.classList.toggle("is-open", !expanded);
+        });
+      }
+
       updateProgress();
       window.addEventListener("scroll", updateProgress);
     </script>

@@ -4,7 +4,7 @@ interface Props {
   searchPlaceholder?: string;
 }
 
-const { activePath = "/", searchPlaceholder = "搜索文章…" } = Astro.props;
+const { activePath = "/", searchPlaceholder = "搜索文章、关键词..." } = Astro.props;
 
 const navItems = [
   { href: "/", label: "首页" },
@@ -19,10 +19,13 @@ const navItems = [
 
 <header class="site-header">
   <a class="logo" href="/">
-    <span class="logo-dot"></span>
-    ZHUWEI<span style="color:var(--muted);">.BLOG</span>
+    <span class="logo-word">ZHUWEI</span>
+    <span class="logo-blog">.BLOG</span>
   </a>
-  <ul class="nav-links">
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
+    菜单
+  </button>
+  <ul class="nav-links" id="site-nav" data-nav-links>
     {navItems.map((item) => (
       <li>
         <a href={item.href} class={activePath === item.href ? "active" : undefined}>{item.label}</a>
@@ -32,7 +35,8 @@ const navItems = [
   <div class="header-right">
     <label class="search-bar">
       <span class="search-icon">⌕</span>
-      <input type="text" placeholder={searchPlaceholder} data-search-input />
+      <input type="text" placeholder={searchPlaceholder} data-search-input aria-label="搜索文章、关键词" />
+      <span class="search-kbd">⌘K</span>
     </label>
   </div>
 </header>

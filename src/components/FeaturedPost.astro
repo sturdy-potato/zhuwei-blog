@@ -23,5 +23,10 @@ const { data } = post;
     </div>
     <div class="featured-title">{data.title}</div>
     <div class="featured-excerpt">{data.excerpt}</div>
+    <div class="post-footer">
+      <span class="post-stat">👁 {data.views.toLocaleString("zh-CN")}</span>
+      <span class="post-stat">💬 {data.comments.toLocaleString("zh-CN")}</span>
+      <span class="post-stat">⏱ {data.minutes} min</span>
+    </div>
   </div>
 </a>

@@ -5,7 +5,6 @@ import Sidebar from "../../components/Sidebar.astro";
 import { getPublishedPosts } from "../../lib/blog";
 
 const posts = await getPublishedPosts();
-const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 ---
 
 <BaseLayout
@@ -26,7 +25,7 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
           {posts.map((post) => <PostCard post={post} />)}
         </div>
       </section>
-      <Sidebar posts={posts} tags={tags} />
+      <Sidebar posts={posts} />
     </div>
   </main>
 </BaseLayout>

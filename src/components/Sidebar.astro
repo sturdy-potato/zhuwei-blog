@@ -4,10 +4,12 @@ import { getPostSlug, slugifyTag } from "../lib/blog";
 
 interface Props {
   posts: CollectionEntry<"blog">[];
-  tags: string[];
+  tags?: string[];
+  showTagCloud?: boolean;
+  showTimeline?: boolean;
 }
 
-const { posts, tags } = Astro.props;
+const { posts, tags = [], showTagCloud = false, showTimeline = false } = Astro.props;
 const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0, 8);
 const timelinePosts = posts.slice(0, 4);
 const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
@@ -26,9 +28,9 @@ const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s
       <div class="author-bio">前端工程师 / 开源爱好者<br />专注 React 生态 &amp; 架构设计</div>
       <div class="social-links">
         <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub">🐙</a>
-        <a class="social-link" href="https://x.com" target="_blank" rel="noreferrer" title="Twitter">🐦</a>
         <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金">📝</a>
-        <a class="social-link" href="/rss.xml" title="RSS">📡</a>
+        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎">💡</a>
+        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱">✉️</a>
       </div>
       <div class="author-stats">
         <div class="author-stat">
@@ -63,33 +65,37 @@ const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s
     </ul>
   </div>
 
-  <div class="widget">
-    <div class="widget-header">
-      <span class="widget-header-dot" style="background:var(--accent3)"></span>
-      标签云
+  {showTagCloud && tags.length > 0 && (
+    <div class="widget">
+      <div class="widget-header">
+        <span class="widget-header-dot" style="background:var(--accent3)"></span>
+        标签云
+      </div>
+      <div class="tag-cloud">
+        {tags.map((tag) => (
+          <a class="cloud-tag" href={`/tags/${slugifyTag(tag)}/`}>{tag}</a>
+        ))}
+      </div>
     </div>
-    <div class="tag-cloud">
-      {tags.map((tag) => (
-        <a class="cloud-tag" href={`/tags/${slugifyTag(tag)}/`}>{tag}</a>
-      ))}
-    </div>
-  </div>
+  )}
 
-  <div class="widget">
-    <div class="widget-header">
-      <span class="widget-header-dot" style="background:var(--amber)"></span>
-      最近动态
+  {showTimeline && timelinePosts.length > 0 && (
+    <div class="widget">
+      <div class="widget-header">
+        <span class="widget-header-dot" style="background:var(--amber)"></span>
+        最近动态
+      </div>
+      <ul class="timeline-list">
+        {timelinePosts.map((post, index) => (
+          <li class="timeline-item">
+            <span class="timeline-dot" style={index === 1 ? "background:var(--green)" : index === 2 ? "background:var(--accent3)" : index === 3 ? "background:var(--amber)" : undefined}></span>
+            <div>
+              <div class="timeline-text"><strong>发布新文章</strong>「{post.data.title}」</div>
+              <div class="timeline-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
-    <ul class="timeline-list">
-      {timelinePosts.map((post, index) => (
-        <li class="timeline-item">
-          <span class="timeline-dot" style={index === 1 ? "background:var(--green)" : index === 2 ? "background:var(--accent3)" : index === 3 ? "background:var(--amber)" : undefined}></span>
-          <div>
-            <div class="timeline-text"><strong>发布新文章</strong>「{post.data.title}」</div>
-            <div class="timeline-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
+  )}
 </aside>
