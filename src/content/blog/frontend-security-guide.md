@@ -10,6 +10,7 @@ icon: "🔐"
 minutes: 14
 views: 4982
 comments: 37
+toDelete: true
 draft: false
 ---
 

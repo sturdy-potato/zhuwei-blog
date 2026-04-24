@@ -10,6 +10,7 @@ icon: "🐳"
 minutes: 20
 views: 4567
 comments: 35
+toDelete: true
 draft: false
 ---
 

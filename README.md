@@ -329,6 +329,9 @@ draft: false
 - `updatedDate`
 - `featured`
 - `pinned`
+- `toDelete`
+  - 测试文章清理标记，写法：`toDelete: true`
+  - 仅用于后续批量删除，不影响当前页面展示逻辑
 
 示例：
 
@@ -381,6 +384,16 @@ draft: false
   会破坏卡片样式映射
 - 不要漏写 `excerpt`
   首页和 SEO 都会受影响
+
+### 8. 测试文章清理约定
+
+如果某篇文章只是临时测试内容，可以在 frontmatter 加：
+
+```md
+toDelete: true
+```
+
+后续需要清理时，直接全局搜索 `toDelete: true`，把这些文件统一删除即可。
 
 ## 给其他 AI 工具的最短指令模板
 

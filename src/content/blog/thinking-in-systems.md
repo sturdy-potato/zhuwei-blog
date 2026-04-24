@@ -10,6 +10,7 @@ icon: "📖"
 minutes: 8
 views: 2134
 comments: 19
+toDelete: true
 draft: false
 ---
 

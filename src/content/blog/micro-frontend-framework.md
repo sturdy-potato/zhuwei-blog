@@ -12,6 +12,7 @@ views: 4820
 comments: 39
 featured: true
 pinned: true
+toDelete: true
 draft: false
 ---
 

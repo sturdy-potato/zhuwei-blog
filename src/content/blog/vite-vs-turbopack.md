@@ -10,6 +10,7 @@ icon: "⚡"
 minutes: 15
 views: 8231
 comments: 63
+toDelete: true
 draft: false
 ---
 
