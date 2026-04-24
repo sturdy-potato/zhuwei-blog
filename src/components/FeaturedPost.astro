@@ -4,14 +4,16 @@ import { formatDate, getPostSlug } from "../lib/blog";
 
 interface Props {
   post: CollectionEntry<"blog">;
+  forcePinned?: boolean;
 }
 
-const { post } = Astro.props;
+const { post, forcePinned = true } = Astro.props;
 const { data } = post;
+const showPinned = forcePinned || data.pinned;
 ---
 
 <a class="featured-post" href={`/blog/${getPostSlug(post)}/`}>
-  {data.pinned && <span class="featured-badge">PINNED</span>}
+  {showPinned && <span class="featured-badge">PINNED</span>}
   <div class="featured-cover">
     <div class="featured-cover-grid"></div>
     <div class="featured-cover-glow"></div>

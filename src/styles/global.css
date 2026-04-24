@@ -584,12 +584,17 @@ img {
 .post-icon-wrap {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 17px;
   flex-shrink: 0;
+}
+
+.post-icon-wrap svg {
+  width: 20px;
+  height: 20px;
 }
 
 .post-icon-wrap.blue {
@@ -1517,6 +1522,12 @@ body {
   place-items: center;
   background: var(--surface-soft);
   color: var(--brand-blue);
+  flex: 0 0 auto;
+}
+
+.stat-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .stat-label {
@@ -1590,7 +1601,43 @@ body {
 .post-icon-wrap {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
+  border-radius: 999px;
+}
+
+.post-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.9;
+}
+
+.post-icon-wrap.blue {
+  color: var(--accent);
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.post-icon-wrap.cyan {
+  color: var(--accent2);
+  background: rgba(8, 145, 178, 0.12);
+}
+
+.post-icon-wrap.purple {
+  color: var(--accent3);
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.post-icon-wrap.green {
+  color: var(--green);
+  background: rgba(5, 150, 105, 0.12);
+}
+
+.post-icon-wrap.amber {
+  color: var(--amber);
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.post-icon-wrap.red {
+  color: var(--red);
+  background: rgba(220, 38, 38, 0.12);
 }
 
 .post-title {
@@ -1968,11 +2015,22 @@ body::before {
 }
 
 .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-bottom: 22px;
   padding: 7px 15px;
   font-size: 13px;
   font-weight: 700;
   background: rgba(238, 242, 255, 0.95);
+}
+
+.hero-badge-icon {
+  width: 14px;
+  height: 14px;
+  color: #eab308;
+  filter: drop-shadow(0 1px 0 rgba(234, 179, 8, 0.25));
+  flex: 0 0 auto;
 }
 
 .hero-visual {
@@ -2283,14 +2341,17 @@ body::before {
 }
 
 .featured-badge {
-  top: 12px;
-  right: 12px;
-  padding: 5px 9px;
-  border-radius: 10px;
+  top: 14px;
+  right: 14px;
+  padding: 5px 10px;
+  border-radius: 999px;
   font-size: 11px;
   font-weight: 800;
-  color: #ef4444;
-  background: rgba(255, 255, 255, 0.96);
+  color: #fff;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.32);
+  letter-spacing: 0.08em;
 }
 
 .featured-body {
@@ -2308,7 +2369,37 @@ body::before {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0;
-  background: #f8fafc;
+  border: none;
+}
+
+.post-tag.blue {
+  color: var(--accent);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.post-tag.cyan {
+  color: var(--accent2);
+  background: rgba(8, 145, 178, 0.1);
+}
+
+.post-tag.purple {
+  color: var(--accent3);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.post-tag.green {
+  color: var(--green);
+  background: rgba(5, 150, 105, 0.1);
+}
+
+.post-tag.amber {
+  color: var(--amber);
+  background: rgba(217, 119, 6, 0.1);
+}
+
+.post-tag.red {
+  color: var(--red);
+  background: rgba(220, 38, 38, 0.1);
 }
 
 .post-grid {
@@ -2333,9 +2424,13 @@ body::before {
 .post-new {
   top: 14px;
   right: 14px;
-  padding: 4px 8px;
-  border-radius: 10px;
-  background: #ecfdf5;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: #10b981;
+  border: none;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
 }
 
 .post-title {
