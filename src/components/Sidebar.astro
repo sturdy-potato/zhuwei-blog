@@ -14,6 +14,8 @@ const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0,
 const timelinePosts = posts.slice(0, 4);
 const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
 const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
+// 中文注释：热门文章卡片使用文章分类和色彩字段生成简洁缩略图，避免额外维护封面资源。
+const getHotPostBadge = (post: CollectionEntry<"blog">) => (post.data.category || "博客").slice(0, 2);
 ---
 
 <aside class="sidebar">
@@ -24,13 +26,33 @@ const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s
     </div>
     <div class="author-widget">
       <div class="author-avatar">Z</div>
-      <div class="author-name">ZhuWei</div>
+      <div class="author-name-row">
+        <div class="author-name">ZhuWei</div>
+        <span class="author-badge">博主</span>
+      </div>
       <div class="author-bio">前端工程师 / 开源爱好者<br />专注 React 生态 &amp; 架构设计</div>
       <div class="social-links">
-        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub">🐙</a>
-        <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金">📝</a>
-        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎">💡</a>
-        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱">✉️</a>
+        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.596 2 12.264c0 4.535 2.865 8.383 6.839 9.741.5.096.684-.223.684-.495 0-.244-.009-.89-.014-1.747-2.782.617-3.369-1.376-3.369-1.376-.455-1.183-1.11-1.497-1.11-1.497-.908-.638.069-.625.069-.625 1.004.073 1.531 1.058 1.531 1.058.892 1.566 2.341 1.114 2.91.852.091-.665.349-1.114.636-1.37-2.221-.26-4.556-1.14-4.556-5.074 0-1.12.389-2.036 1.029-2.754-.103-.261-.446-1.31.098-2.73 0 0 .84-.277 2.75 1.052A9.325 9.325 0 0 1 12 6.87a9.28 9.28 0 0 1 2.504.349c1.909-1.329 2.747-1.052 2.747-1.052.546 1.42.203 2.469.1 2.73.64.718 1.027 1.634 1.027 2.754 0 3.944-2.339 4.811-4.567 5.066.359.32.679.95.679 1.915 0 1.382-.012 2.497-.012 2.836 0 .275.18.596.69.494C19.138 20.643 22 16.796 22 12.264 22 6.596 17.523 2 12 2Z" fill="currentColor"></path>
+          </svg>
+        </a>
+        <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金" aria-label="掘金">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2.5 4.75 6.7v10.6L12 21.5l7.25-4.2V6.7L12 2.5Zm0 2.02 5.5 3.18L12 10.88 6.5 7.7 12 4.52Zm-5.5 4.86 4.75 2.75v5.5L6.5 14.88V9.38Zm11 0v5.5l-4.75 2.75v-5.5l4.75-2.75Z" fill="currentColor"></path>
+          </svg>
+        </a>
+        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎" aria-label="知乎">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.385 6.407c.295-.767.45-1.402.45-2.147 0-.523-.387-.917-.904-.917-.445 0-.77.2-.977.583-.214.418-1.383 3.997-1.575 4.495-.341 1.08-.77 2.387-1.56 3.764H3.712c-.45 0-.812.364-.812.812s.362.812.813.812h2.529c-.916 1.85-2.144 3.523-3.385 4.845-.31.333-.289.857.044 1.166.334.309.857.29 1.166-.044.23-.248.467-.516.704-.8v5.152c0 .445.36.805.805.805.445 0 .805-.36.805-.805v-6.406c.213-.28.421-.57.62-.868h3.595v4.274H8.888c-.445 0-.805.36-.805.805s.36.805.805.805h6.681c.445 0 .805-.36.805-.805s-.36-.805-.805-.805h-3.267v-4.274h3.703c.445 0 .805-.36.805-.805s-.36-.805-.805-.805h-3.703v-3.724h3.053c.445 0 .805-.36.805-.805s-.36-.805-.805-.805h-3.053V6.408h3.543c.445 0 .805-.36.805-.805s-.36-.805-.805-.805h-3.543Z" fill="currentColor"></path>
+            <path d="M20.033 8.623h-2.612c-.445 0-.805.36-.805.805s.36.805.805.805h1.807v8.757h-1.807c-.445 0-.805.36-.805.805s.36.805.805.805h2.612c.445 0 .805-.36.805-.805V9.428c0-.445-.36-.805-.805-.805Z" fill="currentColor"></path>
+          </svg>
+        </a>
+        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱" aria-label="邮箱">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6.5h16A1.5 1.5 0 0 1 21.5 8v8A1.5 1.5 0 0 1 20 17.5H4A1.5 1.5 0 0 1 2.5 16V8A1.5 1.5 0 0 1 4 6.5Zm0 1.5v.214l8 5.2 8-5.2V8H4Zm16 8V9.986l-7.592 4.935a.75.75 0 0 1-.816 0L4 9.986V16h16Z" fill="currentColor"></path>
+          </svg>
+        </a>
       </div>
       <div class="author-stats">
         <div class="author-stat">
@@ -58,8 +80,15 @@ const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s
       {hotPosts.map((post, index) => (
         <li class="rank-item">
           <span class:list={["rank-num", index < 3 && "top"]}>{index + 1}</span>
-          <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
-          <span class="rank-count">{Math.round(post.data.views / 100) / 10}k</span>
+          <a class="rank-thumb" href={`/blog/${getPostSlug(post)}/`} aria-hidden="true">
+            <span class:list={["rank-thumb-card", `tone-${post.data.color ?? "blue"}`]}>
+              {getHotPostBadge(post)}
+            </span>
+          </a>
+          <div class="rank-copy">
+            <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
+            <span class="rank-count">{Math.round(post.data.views / 100) / 10}k</span>
+          </div>
         </li>
       ))}
     </ul>

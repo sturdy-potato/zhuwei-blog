@@ -29,11 +29,11 @@ const sectionColors: Record<string, string> = {
 >
   <Hero />
   <QuickBar tags={tags} />
-  <StatsBar totalPosts={posts.length} totalWords={totalWords} totalViews={totalViews} />
 
   <main class="page-main">
     <div class="home-grid">
       <div class="content content-column">
+        <StatsBar totalPosts={posts.length} totalWords={totalWords} totalViews={totalViews} />
         {pinned && <FeaturedPost post={pinned} />}
         {Object.entries(sections).map(([section, sectionPosts]) => (
           <>

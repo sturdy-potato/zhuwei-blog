@@ -19,49 +19,84 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
 >
   <div class="engagement-summary">
     <div class="engagement-stat">
-      <span class="engagement-label">阅读</span>
-      <strong data-stat-views>{initialViews.toLocaleString("zh-CN")}</strong>
+      <span class="engagement-stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.75 12s3.6-6 9.25-6 9.25 6 9.25 6-3.6 6-9.25 6-9.25-6-9.25-6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+        </svg>
+      </span>
+      <div>
+        <span class="engagement-label">阅读量</span>
+        <strong data-stat-views>{initialViews.toLocaleString("zh-CN")}</strong>
+      </div>
     </div>
     <div class="engagement-stat">
-      <span class="engagement-label">点赞</span>
-      <strong data-stat-likes>{initialLikes.toLocaleString("zh-CN")}</strong>
+      <span class="engagement-stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 20.25 4.95 13.4a4.75 4.75 0 0 1 6.72-6.71L12 7l.33-.31a4.75 4.75 0 1 1 6.72 6.71L12 20.25Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <div>
+        <span class="engagement-label">点赞数</span>
+        <strong data-stat-likes>{initialLikes.toLocaleString("zh-CN")}</strong>
+      </div>
     </div>
     <div class="engagement-stat">
-      <span class="engagement-label">评论</span>
-      <strong data-stat-comments>{initialComments.toLocaleString("zh-CN")}</strong>
+      <span class="engagement-stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 6.75h14A2.25 2.25 0 0 1 21.25 9v7A2.25 2.25 0 0 1 19 18.25H10l-4.75 3v-3H5A2.25 2.25 0 0 1 2.75 16V9A2.25 2.25 0 0 1 5 6.75Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <div>
+        <span class="engagement-label">评论数</span>
+        <strong data-stat-comments>{initialComments.toLocaleString("zh-CN")}</strong>
+      </div>
     </div>
-    <button class="engagement-like" type="button" data-like-button>👍 点赞这篇文章</button>
+    <button class="engagement-like" type="button" data-like-button>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10.25 10.25V5.75A2.75 2.75 0 0 1 13 3h.22c.48 0 .86.38.88.86l.15 3.35 2.64.44A2.75 2.75 0 0 1 19.25 10.4l-.7 6.1A3 3 0 0 1 15.57 19H9.75a2.5 2.5 0 0 1-2.5-2.5v-6.25h3Zm-4.5 0H4.5A1.75 1.75 0 0 0 2.75 12v5.25C2.75 18.22 3.53 19 4.5 19h1.25v-8.75Z" fill="currentColor"></path>
+      </svg>
+      <span data-like-button-text>点赞支持作者</span>
+    </button>
   </div>
 
   <div class="comment-shell">
     <div class="comment-header">
-      <div>
-        <h2>留言 / 评论</h2>
-        <p>评论会直接显示在文章下方，建议保留真实可读的内容风格。</p>
-      </div>
+      <h2 class="comments-title">评论 <span>/ {initialComments}</span></h2>
       <span class="comment-meta" data-comment-count-text>共 {initialComments} 条</span>
     </div>
 
+    <div class="comment-empty-state">
+      <div class="comment-empty-icon">💬</div>
+      <strong>还没有评论，来和作者聊聊吧</strong>
+      <p>你可能是第一个留下评论的人</p>
+    </div>
+
     <form class="comment-form" data-comment-form>
-      <div class="comment-grid">
-        <label class="comment-field">
-          <span>昵称</span>
-          <input name="nickname" maxlength="24" placeholder="怎么称呼你？" required />
+      <div class="comment-author-row">
+        <div class="comment-avatar" aria-hidden="true">Z</div>
+        <label class="comment-field comment-field-inline">
+          <input name="nickname" maxlength="24" placeholder="怎么称呼你？" required aria-label="昵称" />
         </label>
       </div>
       <label class="comment-field">
-        <span>内容</span>
-        <textarea name="content" rows="5" maxlength="500" placeholder="写下你的想法…" required></textarea>
+        <textarea name="content" rows="5" maxlength="500" placeholder="写下你的想法…" required aria-label="评论内容"></textarea>
       </label>
       <div class="comment-actions">
-        <span class="comment-feedback" data-comment-feedback></span>
-        <button type="submit" class="comment-submit">提交评论</button>
+        <div class="comment-tools" aria-hidden="true">
+          <span class="comment-tool">☺</span>
+          <span class="comment-tool">🖼</span>
+          <span class="comment-tool">🔗</span>
+          <span class="comment-tool">&lt;/&gt;</span>
+        </div>
+        <div class="comment-action-right">
+          <span class="comment-feedback" data-comment-feedback></span>
+          <button type="submit" class="comment-submit">发表评论</button>
+        </div>
       </div>
     </form>
 
-    <div class="comment-list" data-comment-list>
-      <div class="comment-empty">还没有评论，欢迎留下第一条反馈。</div>
-    </div>
+    <div class="comment-list" data-comment-list></div>
   </div>
 </section>
 
@@ -83,9 +118,11 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
     const commentsEl = root.querySelector("[data-stat-comments]");
     const commentCountTextEl = root.querySelector("[data-comment-count-text]");
     const likeButton = root.querySelector("[data-like-button]");
+    const likeButtonTextEl = root.querySelector("[data-like-button-text]");
     const commentForm = root.querySelector("[data-comment-form]");
     const feedbackEl = root.querySelector("[data-comment-feedback]");
     const listEl = root.querySelector("[data-comment-list]");
+    const emptyStateEl = root.querySelector(".comment-empty-state");
     const query = new URLSearchParams({
       initialViews: String(initialViews),
       initialLikes: String(initialLikes),
@@ -102,8 +139,11 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
 
     const renderComments = (comments) => {
       if (!listEl) return;
+      if (emptyStateEl instanceof HTMLElement) {
+        emptyStateEl.style.display = comments.length ? "none" : "flex";
+      }
       if (!comments.length) {
-        listEl.innerHTML = '<div class="comment-empty">还没有评论，欢迎留下第一条反馈。</div>';
+        listEl.innerHTML = "";
         return;
       }
 
@@ -158,7 +198,9 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
         const result = await response.json();
         if (result.ok) {
           updateMetrics(result.metrics);
-          likeButton.textContent = result.liked ? "✅ 已点赞" : "👍 点赞这篇文章";
+          if (likeButtonTextEl) {
+            likeButtonTextEl.textContent = result.liked ? "已点赞支持" : "点赞支持作者";
+          }
         } else {
           likeButton.disabled = false;
         }

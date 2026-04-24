@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import PostEngagement from "../components/PostEngagement.astro";
 import Sidebar from "../components/Sidebar.astro";
-import { formatDate, getPostSlug, getPublishedPosts } from "../lib/blog";
+import { formatDate, getPostSlug, getPublishedPosts, slugifyTag } from "../lib/blog";
 
 interface Props {
   post: CollectionEntry<"blog">;
@@ -15,6 +15,16 @@ const currentIndex = posts.findIndex((item) => item.id === post.id);
 const prevPost = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
 const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
 const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
+// 中文注释：文章头图根据文章色彩字段切换装饰氛围，但不影响真实内容数据。
+const heroToneMap: Record<string, string> = {
+  blue: "blue",
+  cyan: "cyan",
+  purple: "purple",
+  green: "green",
+  amber: "amber",
+  red: "red"
+};
+const heroTone = heroToneMap[post.data.color] ?? "blue";
 ---
 
 <BaseLayout
@@ -25,22 +35,38 @@ const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
   canonical={`/blog/${getPostSlug(post)}/`}
   type="article"
 >
-  <main class="page-main">
-    <div class="home-grid">
+  <main class="page-main article-page-main">
+    <div class="article-layout">
       <article class="article-shell">
         <header class="article-head">
-          <div class="article-meta">
-            <span class:list={["post-tag", post.data.color]}>{post.data.category}</span>
-            <span class="post-date">{formatDate(post.data.pubDate)}</span>
-            <span class="post-stat">👁 {post.data.views.toLocaleString("zh-CN")}</span>
-            <span class="post-stat">⏱ {post.data.minutes} min</span>
+          <div class="article-head-top">
+            <div class="article-meta">
+              <span class:list={["post-tag", post.data.color]}>{post.data.category}</span>
+              <span class="article-meta-item">🗓 {formatDate(post.data.pubDate)}</span>
+              <span class="article-meta-item">👁 {post.data.views.toLocaleString("zh-CN")} 阅读</span>
+              <span class="article-meta-item">⏱ {post.data.minutes} 分钟</span>
+            </div>
+            <button class="article-bookmark" type="button" aria-label="收藏文章">🔖</button>
           </div>
           <h1 class="article-title">{post.data.title}</h1>
           <p class="article-summary">{post.data.excerpt}</p>
-          <div class="detail-tags">
+          <div class="detail-tags tag-list">
             {post.data.tags.map((tag) => (
-              <a class="cloud-tag" href={`/tags/${tag.toLowerCase()}/`}>#{tag}</a>
+              <a class="tag-pill" href={`/tags/${slugifyTag(tag)}/`}>#{tag}</a>
             ))}
+          </div>
+          <div class:list={["article-hero", `tone-${heroTone}`]} aria-hidden="true">
+            <div class="article-hero-grid"></div>
+            <div class="article-hero-card article-hero-card-left"></div>
+            <div class="article-hero-connector article-hero-connector-left"></div>
+            <div class="article-hero-cube"></div>
+            <div class="article-hero-symbol">&lt;/&gt;</div>
+            <div class="article-hero-connector article-hero-connector-right"></div>
+            <div class="article-hero-card article-hero-card-right"></div>
+          </div>
+          <div class="article-note">
+            <span class="article-note-icon">✦</span>
+            <p>内容型博客真正难的不是首屏视觉，而是把视觉、内容、路由、SEO 和互动能力同时纳入一套可扩展结构。</p>
           </div>
         </header>
         <div class="article-content">

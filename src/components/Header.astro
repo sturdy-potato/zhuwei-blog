@@ -19,6 +19,9 @@ const navItems = [
 
 <header class="site-header">
   <a class="logo" href="/">
+    <span class="logo-mark" aria-hidden="true">
+      <span class="logo-mark-core"></span>
+    </span>
     <span class="logo-word">ZHUWEI</span>
     <span class="logo-blog">.BLOG</span>
   </a>
@@ -38,5 +41,6 @@ const navItems = [
       <input type="text" placeholder={searchPlaceholder} data-search-input aria-label="搜索文章、关键词" />
       <span class="search-kbd">⌘K</span>
     </label>
+    <button class="header-action" type="button" aria-label="刷新内容推荐">↻</button>
   </div>
 </header>
