@@ -1,8 +1,12 @@
 import { getCollection } from "astro:content";
 
 export type ColorName = "blue" | "green" | "purple" | "amber" | "cyan" | "red";
+const HIDE_ALL_POSTS = false;
 
 export async function getPublishedPosts() {
+  if (HIDE_ALL_POSTS) {
+    return [];
+  }
   const posts = await getCollection("blog", ({ data }) => !data.draft);
 
   // 中文注释：统一按发布时间倒序，避免首页、列表页、标签页排序不一致。
