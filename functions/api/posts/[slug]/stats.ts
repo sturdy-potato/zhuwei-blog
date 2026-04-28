@@ -1,5 +1,5 @@
-import type { PagesFunction } from "@cloudflare/workers-types";
 import { ensurePostMetrics, getPostMetrics, getStatDefaultsFromRequest, json, type Env } from "../../../_lib/db";
+import type { PagesFunction } from "../../../_lib/cf";
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const slug = context.params.slug;

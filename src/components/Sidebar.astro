@@ -7,9 +7,10 @@ interface Props {
   tags?: string[];
   showTagCloud?: boolean;
   showTimeline?: boolean;
+  variant?: "default" | "article" | "archive";
 }
 
-const { posts, tags = [], showTagCloud = false, showTimeline = false } = Astro.props;
+const { posts, tags = [], showTagCloud = false, showTimeline = false, variant = "default" } = Astro.props;
 const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0, 8);
 const timelinePosts = posts.slice(0, 4);
 const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
@@ -23,43 +24,23 @@ function formatCompact(value: number) {
   return `${(value / 1_000_000).toFixed(2)}M`;
 }
 
-const getHotPostBadge = (post: CollectionEntry<"blog">) => (post.data.category || "博客").slice(0, 2);
 ---
 
-<aside class="sidebar">
+<aside class:list={["sidebar", variant === "article" && "article-sidebar", variant === "archive" && "archive-sidebar"]}>
   <div class="widget">
-    <div class="widget-header">
-      <span class="widget-header-dot"></span>
-      关于作者
-    </div>
+    <div class="widget-header">关于作者</div>
     <div class="author-widget">
-      <div class="author-avatar">Z</div>
-      <div class="author-name-row">
-        <div class="author-name">ZhuWei</div>
-        <span class="author-badge">博主</span>
+      <div class="author-name">ZhuWei</div>
+      <div class:list={["author-bio", variant === "article" && "article-author-bio"]}>
+        前端工程师 / 开源爱好者
+        {variant === "article" ? <br /> : " "}
+        专注 React 生态 &amp; 架构设计
       </div>
-      <div class="author-bio">前端工程师 / 开源爱好者<br />专注 React 生态 &amp; 架构设计</div>
       <div class="social-links">
-        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2C6.477 2 2 6.596 2 12.264c0 4.535 2.865 8.383 6.839 9.741.5.096.684-.223.684-.495 0-.244-.009-.89-.014-1.747-2.782.617-3.369-1.376-3.369-1.376-.455-1.183-1.11-1.497-1.11-1.497-.908-.638.069-.625.069-.625 1.004.073 1.531 1.058 1.531 1.058.892 1.566 2.341 1.114 2.91.852.091-.665.349-1.114.636-1.37-2.221-.26-4.556-1.14-4.556-5.074 0-1.12.389-2.036 1.029-2.754-.103-.261-.446-1.31.098-2.73 0 0 .84-.277 2.75 1.052A9.325 9.325 0 0 1 12 6.87a9.28 9.28 0 0 1 2.504.349c1.909-1.329 2.747-1.052 2.747-1.052.546 1.42.203 2.469.1 2.73.64.718 1.027 1.634 1.027 2.754 0 3.944-2.339 4.811-4.567 5.066.359.32.679.95.679 1.915 0 1.382-.012 2.497-.012 2.836 0 .275.18.596.69.494C19.138 20.643 22 16.796 22 12.264 22 6.596 17.523 2 12 2Z" fill="currentColor"></path>
-          </svg>
-        </a>
-        <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金" aria-label="掘金">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 14.316 19.454 8.436 22 10.462 12 18.4 2 10.46l2.545-2.022 7.454 5.876Zm0-7.405 4.917-3.876L12 0 7.083 3.035 12 6.911Zm0 3.704-4.917-3.878-2.549 2.02L12 12.7l7.466-5.944-2.549-2.02L12 10.615Z" fill="currentColor"></path>
-          </svg>
-        </a>
-        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎" aria-label="知乎">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5.72 0C2.25 0 0 2.25 0 5.72v12.56C0 21.75 2.25 24 5.72 24h12.56C21.75 24 24 21.75 24 18.28V5.72C24 2.25 21.75 0 18.28 0H5.72Zm1.97 6.73c-.09.4-.2.83-.33 1.26h6.81V9.17h-2.68c-.01 1.46-.06 2.65-.16 3.63h2.91v1.17h-3.07c-.19.93-.46 1.76-.78 2.48l-.04.09 3.38 4.06-.91.89-2.95-3.62a6.78 6.78 0 0 1-3.8 3.62l-.69-1.07c1.93-.65 3.24-1.78 3.98-3.4.19-.42.36-.88.49-1.4l.07-.26H5.73v-1.17h4.42c.1-.88.16-2.07.16-3.63H8.51c-.32.78-.69 1.54-1.11 2.25l-1.1-.64c.94-1.52 1.58-3.18 1.87-4.97l1.52.26Zm9.36 1.08h1.25v10.07h-2.65l-.59 1.93-1.4-1.93V7.81h1.25v8.78h2.14V7.81Z" fill="currentColor"></path>
-          </svg>
-        </a>
-        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱" aria-label="邮箱">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 6.5h16A1.5 1.5 0 0 1 21.5 8v8A1.5 1.5 0 0 1 20 17.5H4A1.5 1.5 0 0 1 2.5 16V8A1.5 1.5 0 0 1 4 6.5Zm0 1.5v.214l8 5.2 8-5.2V8H4Zm16 8V9.986l-7.592 4.935a.75.75 0 0 1-.816 0L4 9.986V16h16Z" fill="currentColor"></path>
-          </svg>
-        </a>
+        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">GitHub</a>
+        <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金" aria-label="掘金">掘金</a>
+        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎" aria-label="知乎">知乎</a>
+        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱" aria-label="邮箱">邮箱</a>
       </div>
       <div class="author-stats">
         <div class="author-stat">
@@ -79,22 +60,14 @@ const getHotPostBadge = (post: CollectionEntry<"blog">) => (post.data.category |
   </div>
 
   <div class="widget">
-    <div class="widget-header">
-      <span class="widget-header-dot" style="background:var(--red)"></span>
-      热门文章
-    </div>
+    <div class="widget-header">热门文章</div>
     <ul class="rank-list">
       {hotPosts.map((post, index) => (
         <li class="rank-item">
-          <span class:list={["rank-num", index < 3 && "top"]}>{index + 1}</span>
-          <a class="rank-thumb" href={`/blog/${getPostSlug(post)}/`} aria-hidden="true">
-            <span class:list={["rank-thumb-card", `tone-${post.data.color ?? "blue"}`]}>
-              {getHotPostBadge(post)}
-            </span>
-          </a>
+          <span class="rank-num">{index + 1}.</span>
           <div class="rank-copy">
             <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
-            <span class="rank-count">{Math.round(post.data.views / 100) / 10}k</span>
+            <span class="rank-count">{formatCompact(post.data.views)} 阅读</span>
           </div>
         </li>
       ))}
@@ -103,10 +76,7 @@ const getHotPostBadge = (post: CollectionEntry<"blog">) => (post.data.category |
 
   {showTagCloud && tags.length > 0 && (
     <div class="widget">
-      <div class="widget-header">
-        <span class="widget-header-dot" style="background:var(--accent3)"></span>
-        标签云
-      </div>
+      <div class="widget-header">标签云</div>
       <div class="tag-cloud">
         {tags.map((tag) => (
           <a class="cloud-tag" href={`/tags/${slugifyTag(tag)}/`}>{tag}</a>
@@ -117,14 +87,10 @@ const getHotPostBadge = (post: CollectionEntry<"blog">) => (post.data.category |
 
   {showTimeline && timelinePosts.length > 0 && (
     <div class="widget">
-      <div class="widget-header">
-        <span class="widget-header-dot" style="background:var(--amber)"></span>
-        最近动态
-      </div>
+      <div class="widget-header">最近动态</div>
       <ul class="timeline-list">
-        {timelinePosts.map((post, index) => (
+        {timelinePosts.map((post) => (
           <li class="timeline-item">
-            <span class="timeline-dot" style={index === 1 ? "background:var(--green)" : index === 2 ? "background:var(--accent3)" : index === 3 ? "background:var(--amber)" : undefined}></span>
             <div>
               <div class="timeline-text"><strong>发布新文章</strong>「{post.data.title}」</div>
               <div class="timeline-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>

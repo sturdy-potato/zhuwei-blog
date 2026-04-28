@@ -1,42 +1,50 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import FeaturedPost from "../../components/FeaturedPost.astro";
 import PostCard from "../../components/PostCard.astro";
+import QuickBar from "../../components/QuickBar.astro";
 import Sidebar from "../../components/Sidebar.astro";
-import { getPublishedPosts } from "../../lib/blog";
+import { getPublishedPosts, slugifyTag } from "../../lib/blog";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 
   return tags.map((tag) => ({
-    params: { tag: tag.toLowerCase() },
+    params: { tag: slugifyTag(tag) },
     props: { tag }
   }));
 }
 
 const { tag } = Astro.props;
+const { tag: tagSlug } = Astro.params;
 const posts = await getPublishedPosts();
-const filteredPosts = posts.filter((post) => post.data.tags.some((item) => item.toLowerCase() === tag.toLowerCase()));
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+const filteredPosts = posts.filter((post) => post.data.tags.some((item) => slugifyTag(item) === tagSlug));
+const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filteredPosts[0];
 ---
 
 <BaseLayout
   title={`${tag} 标签`}
   description={`浏览所有与 ${tag} 相关的技术文章。`}
-  canonical={`/tags/${tag.toLowerCase()}/`}
+  canonical={`/tags/${slugifyTag(tag)}/`}
+  pageVariant="archive"
 >
+  <QuickBar tags={tags} activeTag={tag} variant="archive" />
   <main class="page-main">
     <div class="home-grid">
       <section class="archive-shell">
         <header class="archive-head">
           <h1 class="archive-title">标签：{tag}</h1>
-          <p class="archive-intro">这个标签页延续首页的 UI 风格，把筛选行为转成可索引的独立页面，方便搜索引擎收录。</p>
+          <p class="archive-intro">围绕「{tag}」这个主题，把相关文章聚合到一个可索引、可浏览、可持续扩展的独立内容入口中。</p>
           <div class="archive-meta">共 {filteredPosts.length} 篇相关文章</div>
         </header>
+        {featuredTagPost && <FeaturedPost post={featuredTagPost} forcePinned={false} variant="archive" />}
         <div class="post-grid">
-          {filteredPosts.map((post) => <PostCard post={post} />)}
+          {filteredPosts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
         </div>
       </section>
-      <Sidebar posts={posts} />
+      <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
     </div>
   </main>
 </BaseLayout>

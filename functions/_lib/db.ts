@@ -1,3 +1,5 @@
+import type { D1Database } from "./cf";
+
 export interface Env {
   BLOG_DB: D1Database;
   TURNSTILE_ENABLED?: string;

@@ -5,33 +5,21 @@ import { formatDate, getPostSlug } from "../lib/blog";
 interface Props {
   post: CollectionEntry<"blog">;
   forcePinned?: boolean;
+  variant?: "default" | "archive";
 }
 
-const { post, forcePinned = true } = Astro.props;
+const { post, forcePinned = true, variant = "default" } = Astro.props;
 const { data } = post;
 const showPinned = forcePinned || data.pinned;
 ---
 
-<a class="featured-post" href={`/blog/${getPostSlug(post)}/`}>
-  {showPinned && <span class="featured-badge">PINNED</span>}
-  <div class="featured-cover">
-    <div class="featured-cover-grid"></div>
-    <div class="featured-cover-glow"></div>
-    <div class="featured-cube featured-cube-main"></div>
-    <div class="featured-cube featured-cube-side"></div>
-    <div class="featured-cover-symbol">&lt;/&gt;</div>
-  </div>
-  <div class="featured-body">
-    <div class="featured-meta">
-      <span class:list={["post-tag", data.color]}>{data.category}</span>
-      <span class="post-date">{formatDate(data.pubDate)}</span>
-    </div>
-    <div class="featured-title">{data.title}</div>
-    <div class="featured-excerpt">{data.excerpt}</div>
-    <div class="post-footer">
-      <span class="post-stat">👁 {data.views.toLocaleString("zh-CN")}</span>
-      <span class="post-stat">💬 {data.comments.toLocaleString("zh-CN")}</span>
-      <span class="post-stat">⏱ {data.minutes} min</span>
-    </div>
-  </div>
-</a>
+<article class:list={["featured-post", variant === "archive" && "archive-post"]}>
+  <p>
+    {showPinned && <strong>精选文章</strong>}
+    {showPinned && " "}
+    <a href={`/blog/${getPostSlug(post)}/`}>{data.title}</a>
+  </p>
+  <p>{data.category} · {formatDate(data.pubDate)}</p>
+  <p>{data.excerpt}</p>
+  <p>阅读 {data.views.toLocaleString("zh-CN")} · 评论 {data.comments.toLocaleString("zh-CN")} · {data.minutes} 分钟</p>
+</article>

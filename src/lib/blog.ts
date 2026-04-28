@@ -40,5 +40,9 @@ export function groupPostsBySection<T extends { data: { section: string } }>(pos
 }
 
 export function slugifyTag(tag: string) {
-  return tag.toLowerCase();
+  return tag
+    .toLowerCase()
+    .trim()
+    .replace(/[\/\s]+/g, "-")
+    .replace(/-+/g, "-");
 }

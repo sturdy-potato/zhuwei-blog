@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import PostEngagement from "../components/PostEngagement.astro";
 import Sidebar from "../components/Sidebar.astro";
 import { formatDate, getPostSlug, getPublishedPosts, slugifyTag } from "../lib/blog";
 
@@ -15,38 +14,25 @@ const currentIndex = posts.findIndex((item) => item.id === post.id);
 const prevPost = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
 const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
 const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
-// 中文注释：文章头图根据文章色彩字段切换装饰氛围，但不影响真实内容数据。
-const heroToneMap: Record<string, string> = {
-  blue: "blue",
-  cyan: "cyan",
-  purple: "purple",
-  green: "green",
-  amber: "amber",
-  red: "red"
-};
-const heroTone = heroToneMap[post.data.color] ?? "blue";
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.excerpt}
   activePath="/blog/"
-  searchPlaceholder="搜索更多文章…"
   canonical={`/blog/${getPostSlug(post)}/`}
   type="article"
+  pageVariant="article"
 >
   <main class="page-main article-page-main">
     <div class="article-layout">
       <article class="article-shell">
         <header class="article-head">
-          <div class="article-head-top">
-            <div class="article-meta">
-              <span class:list={["post-tag", post.data.color]}>{post.data.category}</span>
-              <span class="article-meta-item">🗓 {formatDate(post.data.pubDate)}</span>
-              <span class="article-meta-item">👁 {post.data.views.toLocaleString("zh-CN")} 阅读</span>
-              <span class="article-meta-item">⏱ {post.data.minutes} 分钟</span>
-            </div>
-            <button class="article-bookmark" type="button" aria-label="收藏文章">🔖</button>
+          <div class="article-meta">
+            <span class:list={["post-tag", post.data.color]}>{post.data.category}</span>
+            <span class="article-meta-item">{formatDate(post.data.pubDate)}</span>
+            <span class="article-meta-item">{post.data.views.toLocaleString("zh-CN")} 阅读</span>
+            <span class="article-meta-item">{post.data.minutes} 分钟</span>
           </div>
           <h1 class="article-title">{post.data.title}</h1>
           <p class="article-summary">{post.data.excerpt}</p>
@@ -55,45 +41,24 @@ const heroTone = heroToneMap[post.data.color] ?? "blue";
               <a class="tag-pill" href={`/tags/${slugifyTag(tag)}/`}>#{tag}</a>
             ))}
           </div>
-          <div class:list={["article-hero", `tone-${heroTone}`]} aria-hidden="true">
-            <div class="article-hero-grid"></div>
-            <div class="article-hero-card article-hero-card-left"></div>
-            <div class="article-hero-connector article-hero-connector-left"></div>
-            <div class="article-hero-cube"></div>
-            <div class="article-hero-symbol">&lt;/&gt;</div>
-            <div class="article-hero-connector article-hero-connector-right"></div>
-            <div class="article-hero-card article-hero-card-right"></div>
-          </div>
-          <div class="article-note">
-            <span class="article-note-icon">✦</span>
-            <p>内容型博客真正难的不是首屏视觉，而是把视觉、内容、路由、SEO 和互动能力同时纳入一套可扩展结构。</p>
-          </div>
         </header>
         <div class="article-content">
           <slot />
         </div>
-        <PostEngagement
-          slug={getPostSlug(post)}
-          initialViews={post.data.views}
-          initialLikes={0}
-          initialComments={post.data.comments}
-        />
         <nav class="article-nav">
           {prevPost ? (
             <a href={`/blog/${getPostSlug(prevPost)}/`}>
-              <div class="article-nav-label">上一篇</div>
-              <div class="article-nav-title">{prevPost.data.title}</div>
+              上一篇：{prevPost.data.title}
             </a>
           ) : <div></div>}
           {nextPost ? (
             <a href={`/blog/${getPostSlug(nextPost)}/`}>
-              <div class="article-nav-label">下一篇</div>
-              <div class="article-nav-title">{nextPost.data.title}</div>
+              下一篇：{nextPost.data.title}
             </a>
           ) : <div></div>}
         </nav>
       </article>
-      <Sidebar posts={posts} tags={allTags} showTagCloud={true} showTimeline={true} />
+      <Sidebar posts={posts} tags={allTags} showTagCloud={true} showTimeline={true} variant="article" />
     </div>
   </main>
 </BaseLayout>

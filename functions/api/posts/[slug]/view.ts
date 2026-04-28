@@ -1,4 +1,3 @@
-import type { PagesFunction } from "@cloudflare/workers-types";
 import {
   createVisitorFingerprint,
   ensurePostMetrics,
@@ -8,6 +7,7 @@ import {
   type Env,
   type PostMetricDefaults
 } from "../../../_lib/db";
+import type { PagesFunction } from "../../../_lib/cf";
 
 interface ViewPayload {
   initialViews?: number;
