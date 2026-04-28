@@ -30,6 +30,34 @@
 4. 发布到 Cloudflare Pages
    `npx wrangler pages deploy dist --project-name zhuwei-blog`
 
+### 1.1 一键部署脚本
+
+为了避免每次手动切 Node 版本和敲部署命令，仓库里可以直接用这个脚本：
+
+1. 正常发布
+   `npm run deploy:pages`
+2. 发布前顺带跑检查
+   `npm run deploy:pages:check`
+3. 只做构建验证，不正式发布
+   `npm run deploy:pages:build-only`
+
+脚本位置：
+
+- `scripts/deploy-pages.sh`
+
+这个脚本会做几件事：
+
+- 优先使用兼容 Astro 6 的 Node 运行时
+- 执行 `npm run build`
+- 执行 `npx wrangler pages deploy dist --project-name zhuwei-blog`
+- 如果你用了 `deploy:pages:check`，会在发布前额外执行 `npm run check`
+
+注意：
+
+- `deploy:pages:check` 对代码质量更稳，但如果项目当前存在类型问题，会中断发布
+- `deploy:pages` 只要求构建成功，更适合你现在这种“内容改完就发”的日常流程
+- `deploy:pages:build-only` 适合你先自测构建结果，再决定是否正式发版
+
 如果只是在本地预览：
 
 1. 启动开发环境

@@ -8,6 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "astro build && wrangler deploy",
+    "deploy:pages": "./scripts/deploy-pages.sh",
+    "deploy:pages:check": "./scripts/deploy-pages.sh --check",
+    "deploy:pages:build-only": "./scripts/deploy-pages.sh --build-only",
     "check": "astro check"
   },
   "dependencies": {
