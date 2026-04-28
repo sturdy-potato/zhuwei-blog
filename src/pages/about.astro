@@ -12,24 +12,32 @@ const posts = await getPublishedPosts();
   activePath="/about/"
   canonical="/about/"
 >
-  <main class="page-main">
-    <div class="home-grid">
-      <section class="article-shell">
-        <header class="article-head">
-          <div class="article-meta">
-            <span class="post-tag cyan">关于</span>
-            <span class="post-date">持续更新</span>
+  <main class="article-page-main">
+    <div class="article-layout">
+      <div>
+        <article class="article-shell">
+          <header class="article-head">
+            <div class="article-meta">
+              <span class="post-tag cyan">关于</span>
+              <span class="article-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                持续更新
+              </span>
+            </div>
+            <h1 class="article-title">关于这个博客：Token 剩余产物</h1>
+            <p class="article-summary">你可能在想，这个博客的更新频率是怎么确定的？是靠自律吗？是靠对技术的热爱吗？不，是靠我的 AI Token 余额。</p>
+          </header>
+          <div class="article-content">
+            <h2>更新算法</h2>
+            <p>很多人问我（其实并没人问）什么时候更新。答案很简单：<strong>每当我发现这个月的 AI Token 还没用完，又快到结算日的时候。</strong> 为了不浪费这些昂贵的字符，我会强行拉着 AI 跟我一起思考一些后端工程、系统架构或者“代码为什么跑不起来”的哲学问题。</p>
+            <p>所以，如果你看到我高频更新，说明我最近比较闲或者 Token 买多了；如果我消失了，那说明我正在节衣缩食，或者正在手动打字（这太残忍了）。</p>
+            
+            <blockquote>“用代码书写，以文字沉淀”——其实真相是：“用 AI 吹水，以 Token 续命”。</blockquote>
+            <p>欢迎常来，只要余额还在，我就还在。</p>
           </div>
-          <h1 class="article-title">关于这个博客</h1>
-          <p class="article-summary">这个站点现在已经不是单纯的静态 HTML，而是 Astro 驱动的内容型博客骨架。视觉仍然保持你原来那份设计：理性、密集、偏产品化，而不是通用模板感。</p>
-        </header>
-        <div class="article-content">
-          <p>当前技术栈选择是 <code>Astro + Cloudflare Workers</code>。这样做的原因很直接：博客页面可以预渲染成 SEO 友好的 HTML，同时以后要扩展接口时，也能继续使用同一套 Cloudflare 部署体系。</p>
-          <p>后续如果你要加留言、点赞、订阅或者简单后台，可以优先在 <code>/api/*</code> 上接 Hono，再按需引入 D1、R2 或 KV，而不用推翻前台结构。</p>
-          <blockquote>这套骨架的重点不是“炫技术”，而是先把内容发布、收录和后续扩展的地基打稳。</blockquote>
-        </div>
-      </section>
-      <Sidebar posts={posts} />
+        </article>
+      </div>
+      <Sidebar posts={posts} showTagCloud={true} variant="article" />
     </div>
   </main>
 </BaseLayout>
