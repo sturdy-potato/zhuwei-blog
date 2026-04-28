@@ -2,7 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FeaturedPost from "../../components/FeaturedPost.astro";
 import PostCard from "../../components/PostCard.astro";
-import QuickBar from "../../components/QuickBar.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import { getPinnedPost, getPublishedPosts } from "../../lib/blog";
 
@@ -18,21 +17,20 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
   canonical="/blog/"
   pageVariant="archive"
 >
-  <QuickBar tags={tags} variant="archive" />
-  <main class="page-main">
-    <div class="home-grid">
-      <section class="archive-shell">
-        <header class="archive-head">
-          <h1 class="archive-title">博客归档</h1>
-          <p class="archive-intro">这里保留了全部公开文章。页面结构延续首页的卡片式信息密度，但把重点放在可检索、可归档、可持续更新上。</p>
-          <div class="archive-meta">共 {posts.length} 篇文章</div>
-        </header>
-        {pinned && <FeaturedPost post={pinned} variant="archive" />}
-        <div class="post-grid">
-          {posts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
-        </div>
-      </section>
-      <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
-    </div>
-  </main>
+  <div class="page-wrap">
+    <main>
+      <div class="hp-section-title" style="margin-bottom:20px;">
+        博客归档
+        <span style="font-size:13px;font-weight:400;color:var(--text-muted);margin-left:auto;">共 {posts.length} 篇文章</span>
+      </div>
+
+      {pinned && <FeaturedPost post={pinned} variant="archive" />}
+
+      <div class="hp-article-list">
+        {posts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
+      </div>
+    </main>
+
+    <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
+  </div>
 </BaseLayout>

@@ -1,48 +1,206 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import FeaturedPost from "../components/FeaturedPost.astro";
-import Hero from "../components/Hero.astro";
-import PostCard from "../components/PostCard.astro";
-import QuickBar from "../components/QuickBar.astro";
-import SectionHeader from "../components/SectionHeader.astro";
-import Sidebar from "../components/Sidebar.astro";
-import StatsBar from "../components/StatsBar.astro";
-import { getPinnedPost, getPublishedPosts, groupPostsBySection } from "../lib/blog";
+import { formatDate, getPinnedPost, getPostSlug, getPublishedPosts } from "../lib/blog";
 
 const posts = await getPublishedPosts();
 const pinned = await getPinnedPost();
-const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
-const sections = groupPostsBySection(posts.filter((post) => !post.data.pinned));
 const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
 const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
+const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0, 5);
+
+function categoryClass(color: string | undefined) {
+  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `hp-cat-${color}`;
+  return "hp-cat-blue";
+}
+
+function iconClass(color: string | undefined) {
+  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `is-${color}`;
+  return "is-blue";
+}
+
+const tabItems = [
+  { href: "/", label: "全部", icon: "★" },
+  { href: "/tags/后端开发/", label: "后端开发", icon: "🧩" },
+  { href: "/tags/网络协议/", label: "网络协议", icon: "🌐" },
+  { href: "/tags/消息队列/", label: "消息队列", icon: "📬" },
+  { href: "/tags/ai/", label: "AI & 自动化", icon: "🤖" },
+  { href: "/tags/go/", label: "Go", icon: "🐹" },
+  { href: "/tags/python/", label: "Python", icon: "🐍" },
+  { href: "/tags/php/", label: "PHP", icon: "🐘" },
+  { href: "/tags/http-2/", label: "HTTP/2", icon: "⚡" },
+  { href: "/tags/grpc/", label: "gRPC", icon: "🔌" },
+  { href: "/tags/rocketmq/", label: "RocketMQ", icon: "🚀" },
+  { href: "/tags/embedding/", label: "Embedding", icon: "🧠" },
+  { href: "/tags/定时任务/", label: "定时任务", icon: "⏰" }
+];
 ---
 
 <BaseLayout
   title="技术笔记与思考"
-  description="一个专注于前端开发、系统设计与开源技术的个人博客。记录技术成长与思考。"
+  description="一个专注于后端工程、网络协议与 AI 自动化的个人博客，用 PHP / Go / Python 记录真实项目中的问题与方案。"
   activePath="/"
+  searchPlaceholder="搜索更多文章..."
 >
-  <div class="page-home">
-    <Hero />
-    <main class="page-main page-main--home" id="main-content">
-      <div class="home-grid">
-        <div class="content content-column">
-          {pinned && <FeaturedPost post={pinned} />}
-          <StatsBar totalPosts={posts.length} totalWords={totalWords} totalViews={totalViews} />
-          <QuickBar tags={tags} density="compact" />
-          {Object.entries(sections).map(([section, sectionPosts]) => (
-            <section>
-              <SectionHeader title={section} />
-              <div class="post-grid">
-                {sectionPosts.map((post, index) => (
-                  <PostCard post={post} isNew={section === "最新文章" && index === 0} />
-                ))}
-              </div>
-            </section>
+  <div class="hp-root">
+    <section class="hp-hero">
+      <div class="hp-hero-inner">
+        <div class="hp-hero-left">
+          <div class="hp-hero-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+            技术写作 · 持续更新
+          </div>
+          <h1 class="hp-hero-title">代码、设计与<span class="hp-accent">独立思考</span></h1>
+          <p class="hp-hero-desc">专注于后端工程、网络协议与 AI 自动化，<br />用 PHP / Go / Python 把每一个踩过的坑写清楚。</p>
+        </div>
+        <div class="hp-hero-right" aria-hidden="true">
+          <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="glow1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#818cf8" stop-opacity=".25"/><stop offset="100%" stop-color="#818cf8" stop-opacity="0"/></radialGradient>
+              <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+            </defs>
+            <ellipse cx="260" cy="110" rx="140" ry="100" fill="url(#glow1)"/>
+            <rect x="128" y="18" width="242" height="167" rx="10" fill="white" stroke="#e0e7ff" stroke-width="1"/>
+            <rect x="128" y="18" width="242" height="30" rx="10" fill="#f5f7ff"/><rect x="128" y="33" width="242" height="15" fill="#f5f7ff"/>
+            <circle cx="147" cy="33" r="5" fill="#ff6b6b" opacity=".7"/><circle cx="162" cy="33" r="5" fill="#ffd166" opacity=".7"/><circle cx="177" cy="33" r="5" fill="#06d6a0" opacity=".7"/>
+            <rect x="196" y="26" width="160" height="14" rx="7" fill="#eff0ff" stroke="#dde1ff" stroke-width="1"/>
+            <text x="205" y="36.5" font-size="8" fill="#9ca3af" font-family="monospace">zhuwei.blog</text>
+            <rect x="148" y="62" width="80" height="8" rx="4" fill="#e0e7ff"/><rect x="148" y="76" width="180" height="6" rx="3" fill="#eef0ff"/>
+            <rect x="148" y="88" width="150" height="6" rx="3" fill="#eef0ff"/><rect x="148" y="100" width="165" height="6" rx="3" fill="#f3f4ff"/>
+            <rect x="148" y="116" width="200" height="52" rx="6" fill="#1e1b4b" opacity=".9"/>
+            <text x="158" y="132" font-size="9" fill="#818cf8" font-family="monospace">&lt;</text><text x="164" y="132" font-size="9" fill="#a5b4fc" font-family="monospace">/</text><text x="169" y="132" font-size="9" fill="#818cf8" font-family="monospace">&gt;</text>
+            <rect x="158" y="138" width="60" height="4" rx="2" fill="#4f46e5" opacity=".6"/><rect x="224" y="138" width="40" height="4" rx="2" fill="#7c3aed" opacity=".5"/>
+            <rect x="158" y="148" width="80" height="4" rx="2" fill="#6366f1" opacity=".5"/><rect x="158" y="156" width="50" height="4" rx="2" fill="#4f46e5" opacity=".4"/>
+            <rect x="313" y="6" width="92" height="62" rx="8" fill="white" stroke="#e0e7ff" stroke-width="1"/>
+            <rect x="320" y="14" width="40" height="7" rx="3.5" fill="#eef0ff"/><rect x="320" y="26" width="72" height="5" rx="2.5" fill="#f3f4ff"/>
+            <rect x="320" y="36" width="60" height="5" rx="2.5" fill="#f3f4ff"/><rect x="320" y="48" width="30" height="10" rx="5" fill="#4f63f5"/>
+            <g transform="translate(345,130)"><circle cx="0" cy="0" r="34" fill="white" stroke="#e0e7ff" stroke-width="1"/><circle cx="0" cy="0" r="22" fill="none" stroke="#e0e7ff" stroke-width="10"/><circle cx="0" cy="0" r="22" fill="none" stroke="#4f63f5" stroke-width="10" stroke-dasharray="83 55" stroke-linecap="round"/><circle cx="0" cy="0" r="22" fill="none" stroke="#a5b4fc" stroke-width="10" stroke-dasharray="34 104" stroke-dashoffset="-83" stroke-linecap="round"/><circle cx="0" cy="0" r="12" fill="white"/><text x="-6" y="4" font-size="9" fill="#4f63f5" font-weight="700" font-family="monospace">68%</text></g>
+            <circle cx="315" cy="68" r="3" fill="#4f63f5" opacity=".5"/><circle cx="370" cy="96" r="3" fill="#818cf8" opacity=".5"/>
+            <line x1="315" y1="68" x2="370" y2="96" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="4,3"/>
+            <circle cx="100" cy="50" r="3" fill="#c7d2fe" opacity=".6"/><circle cx="85" cy="90" r="2" fill="#a5b4fc" opacity=".5"/>
+            <circle cx="108" cy="145" r="4" fill="#ddd6fe" opacity=".5"/><circle cx="60" cy="120" r="2" fill="#c7d2fe" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="hp-main">
+      <div class="hp-content">
+        <div class="hp-filter-tabs">
+          {tabItems.map((tab, index) => (
+            <a class:list={["hp-tab", index === 0 && "is-active"]} href={tab.href}>
+              <span class="hp-tab-icon">{tab.icon}</span>{tab.label}
+            </a>
           ))}
         </div>
-        <Sidebar posts={posts} />
+
+        <div class="hp-stats-bar">
+          <div class="hp-stat-item">
+            <div class="hp-stat-icon is-blue">📄</div>
+            <div class="hp-stat-info"><div class="hp-stat-label">文章总数</div><div class="hp-stat-value">{posts.length}</div></div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-icon is-purple">✍️</div>
+            <div class="hp-stat-info"><div class="hp-stat-label">总字数</div><div class="hp-stat-value">{totalWords.toLocaleString("zh-CN")}</div></div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-icon is-orange">👁</div>
+            <div class="hp-stat-info"><div class="hp-stat-label">总阅读量</div><div class="hp-stat-value">{totalViews.toLocaleString("zh-CN")} <span class="hp-stat-badge">▲ 5.1%</span></div></div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-icon is-green">👥</div>
+            <div class="hp-stat-info">
+              <div class="hp-stat-label">今日访客</div>
+              <div class="hp-stat-value"><span data-live-visitors>2,486</span><span class="hp-stat-live"></span></div>
+            </div>
+          </div>
+        </div>
+
+        {pinned && (
+          <a class="hp-pinned-card" href={`/blog/${getPostSlug(pinned)}/`}>
+            <div class="hp-pinned-img">
+              <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+              <div class="hp-pinned-badge">PINNED</div>
+            </div>
+            <div class="hp-pinned-body">
+              <span class:list={["hp-cat-tag", categoryClass(pinned.data.color)]}>{pinned.data.category}</span>
+              <div class="hp-pinned-date">{formatDate(pinned.data.pubDate)}</div>
+              <h2 class="hp-pinned-title">{pinned.data.title}</h2>
+              <p class="hp-pinned-desc">{pinned.data.excerpt}</p>
+            </div>
+          </a>
+        )}
+
+        <div class="hp-section-title">最新文章</div>
+        <div class="hp-article-list">
+          {posts.map((post, index) => (
+            <a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`}>
+              <div class:list={["hp-article-icon", iconClass(post.data.color)]}>✦</div>
+              <div class="hp-article-info">
+                <div class="hp-article-meta">
+                  <span class:list={["hp-cat-tag", categoryClass(post.data.color)]}>{post.data.category}</span>
+                  <span class="hp-article-date">{formatDate(post.data.pubDate)}</span>
+                  {index === 0 && <span class="hp-article-new">NEW</span>}
+                </div>
+                <div class="hp-article-title">{post.data.title}</div>
+                <div class="hp-article-desc">{post.data.excerpt}</div>
+                <div class="hp-article-footer">
+                  <div class="hp-article-stat">👁 {post.data.views.toLocaleString("zh-CN")}</div>
+                  <div class="hp-article-stat">💬 {post.data.comments.toLocaleString("zh-CN")}</div>
+                  <div class="hp-article-stat">⏱ {post.data.minutes} min</div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
-    </main>
+
+      <aside class="hp-sidebar">
+        <div class="hp-sidebar-card">
+          <div class="hp-sidebar-title">关于作者</div>
+          <div class="hp-author-avatar">Z</div>
+          <div class="hp-author-info">
+            <div class="hp-author-name">ZhuWei <span class="hp-author-badge">博主</span></div>
+            <div class="hp-author-role">后端工程师 / 开源爱好者<br />PHP · Go · Python，偏好分布式与 AI 工程化</div>
+          </div>
+          <div class="hp-author-links">
+            <a class="hp-author-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"></path></svg>
+            </a>
+            <a class="hp-author-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金" aria-label="掘金">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.25l-8.5 4.9v9.7l8.5 4.9 8.5-4.9V7.15L12 2.25zm0 2.3l6.24 3.6-6.24 3.6-6.24-3.6L12 4.55zm-7 5.17l6 3.46v6.93l-6-3.46V9.72zm8 10.39v-6.93l6-3.46v6.93l-6 3.46z"></path></svg>
+            </a>
+            <a class="hp-author-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎" aria-label="知乎">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24H18.28C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.963 6.73c-.09.4-.2.83-.33 1.26h6.81V9.17h-2.68c-.01 1.46-.06 2.65-.16 3.63h2.91v1.17h-3.07c-.19.93-.46 1.76-.78 2.48l-.04.09 3.38 4.06-.91.89-2.95-3.62a6.78 6.78 0 0 1-3.8 3.62l-.69-1.07c1.93-.65 3.24-1.78 3.98-3.4.19-.42.36-.88.49-1.4l.07-.26H5.73v-1.17h4.42c.1-.88.16-2.07.16-3.63H8.51c-.32.78-.69 1.54-1.11 2.25l-1.1-.64c.94-1.52 1.58-3.18 1.87-4.97l1.52.26zm9.36 1.08h1.25v10.07h-2.65l-.59 1.93-1.4-1.93V7.81h1.25v8.78h2.14V7.81z"></path></svg>
+            </a>
+            <a class="hp-author-link" href="mailto:hello@zhuwei.fun" title="邮件" aria-label="邮件">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </a>
+          </div>
+          <div class="hp-author-stats">
+            <div class="hp-author-stat"><div class="hp-author-stat-value">{posts.length}</div><div class="hp-author-stat-label">文章</div></div>
+            <div class="hp-author-stat"><div class="hp-author-stat-value">{Math.round(totalWords / 100) / 10}k</div><div class="hp-author-stat-label">字数</div></div>
+            <div class="hp-author-stat"><div class="hp-author-stat-value">{totalViews}</div><div class="hp-author-stat-label">阅读</div></div>
+          </div>
+        </div>
+
+        <div class="hp-sidebar-card">
+          <div class="hp-sidebar-title">热门文章</div>
+          <div class="hp-hot-list">
+            {hotPosts.map((post, index) => (
+              <a class="hp-hot-item" href={`/blog/${getPostSlug(post)}/`}>
+                <div class:list={["hp-hot-num", `is-n${index + 1}`]}>{index + 1}</div>
+                <div class:list={["hp-hot-thumb", `is-t${Math.min(index + 1, 5)}`]}>⚡</div>
+                <div class="hp-hot-body">
+                  <div class="hp-hot-title">{post.data.title}</div>
+                  <div class="hp-hot-reads">{post.data.views} 阅读</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 </BaseLayout>

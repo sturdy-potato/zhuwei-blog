@@ -1,0 +1,26 @@
+---
+description: Prevent content frontmatter and deployment regressions
+alwaysApply: true
+---
+
+# 内容与部署安全规则（博客）
+
+目标：避免再次出现“文章丢失/样式丢失/构建成功但发布错误产物”的事故。
+
+## 修改内容文件时必须遵守
+
+- 仅在 `src/content/blog/*.md` 新增或修改文章，不手改 `dist/`。
+- Frontmatter 必须是合法 YAML（引号成对、缩进正确）。
+- `tags` 禁止包含 `/`（例如 `HTTP/2`），统一改为不含斜杠形式（如 `HTTP2`）。
+- 新增文章后，先确认文章集合数量未异常减少。
+
+## 发布前必须执行
+
+- 必须先构建再发布：`npm run build`。
+- 构建后必须检查 `dist/blog/` 是否包含预期文章列表，再执行部署。
+- 禁止直接发布“未知来源或历史遗留”的 `dist/` 产物。
+
+## 构建失败处理
+
+- 若 frontmatter/YAML 报错：先修文章头部格式，再重建。
+- 若标签路由报错（如 `Missing parameter: tag`）：优先排查 `tags` 中是否含 `/`。

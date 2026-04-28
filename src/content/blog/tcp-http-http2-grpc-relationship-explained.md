@@ -7,7 +7,7 @@ section: "技术专栏"
 tags:
   - TCP
   - HTTP
-  - HTTP/2
+  - HTTP2
   - gRPC
   - 网络协议
 color: "green"

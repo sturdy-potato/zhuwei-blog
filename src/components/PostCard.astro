@@ -10,16 +10,36 @@ interface Props {
 
 const { post, isNew = false, variant = "default" } = Astro.props;
 const { data } = post;
+
+function iconClass(color: string | undefined) {
+  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `is-${color}`;
+  return "is-blue";
+}
 ---
 
-<article class:list={["post-card", variant === "archive" && "archive-post-card"]} data-tags={data.tags.join(",").toLowerCase()}>
-  <h3 class="post-title">
-    <a href={`/blog/${getPostSlug(post)}/`}>
-      {isNew && "NEW · "}
-      {data.title}
-    </a>
-  </h3>
-  <p>{data.category} · {formatDate(data.pubDate)}</p>
-  <p class="post-excerpt">{data.excerpt}</p>
-  <p>阅读 {formatNumber(data.views)} · 评论 {formatNumber(data.comments)} · {data.minutes} 分钟</p>
-</article>
+<a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`}>
+  <div class:list={["hp-article-icon", iconClass(data.color)]}>{data.icon || "✦"}</div>
+  <div class="hp-article-info">
+    <div class="hp-article-meta">
+      <span class:list={["hp-cat-tag", `hp-cat-${data.color || "blue"}`]}>{data.category}</span>
+      <span class="hp-article-date">{formatDate(data.pubDate)}</span>
+      {isNew && <span class="hp-article-new">NEW</span>}
+    </div>
+    <div class="hp-article-title">{data.title}</div>
+    <div class="hp-article-desc">{data.excerpt}</div>
+    <div class="hp-article-footer">
+      <div class="hp-article-stat">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        {formatNumber(data.views)}
+      </div>
+      <div class="hp-article-stat">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        {formatNumber(data.comments)}
+      </div>
+      <div class="hp-article-stat">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        {data.minutes} min
+      </div>
+    </div>
+  </div>
+</a>

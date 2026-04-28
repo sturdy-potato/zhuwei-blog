@@ -2,7 +2,9 @@
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import SeoHead from "../components/SeoHead.astro";
-import "../styles/minimal-site.css";
+import "../styles/base.css";
+import "../styles/home.css";
+import "../styles/detail.css";
 
 interface Props {
   title: string;
@@ -29,13 +31,16 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <SeoHead title={title} description={description} canonical={canonical} type={type} />
   </head>
   <body>
-    <div class:list={["page-shell", pageVariant === "article" && "page-shell-article"]}>
-      <Header activePath={activePath} variant={pageVariant} />
-      <slot />
-      <Footer variant={pageVariant} />
-    </div>
+    <Header activePath={activePath} variant={pageVariant} />
+    <slot />
+    <Footer variant={pageVariant} />
+    <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到顶部">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
   </body>
 </html>

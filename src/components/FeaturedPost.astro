@@ -10,16 +10,17 @@ interface Props {
 
 const { post, forcePinned = true, variant = "default" } = Astro.props;
 const { data } = post;
-const showPinned = forcePinned || data.pinned;
 ---
 
-<article class:list={["featured-post", variant === "archive" && "archive-post"]}>
-  <p>
-    {showPinned && <strong>精选文章</strong>}
-    {showPinned && " "}
-    <a href={`/blog/${getPostSlug(post)}/`}>{data.title}</a>
-  </p>
-  <p>{data.category} · {formatDate(data.pubDate)}</p>
-  <p>{data.excerpt}</p>
-  <p>阅读 {data.views.toLocaleString("zh-CN")} · 评论 {data.comments.toLocaleString("zh-CN")} · {data.minutes} 分钟</p>
-</article>
+<a class="hp-pinned-card" href={`/blog/${getPostSlug(post)}/`}>
+  <div class="hp-pinned-img">
+    <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+    <div class="hp-pinned-badge">PINNED</div>
+  </div>
+  <div class="hp-pinned-body">
+    <span class:list={["hp-cat-tag", `hp-cat-${data.color || "blue"}`]}>{data.category}</span>
+    <span class="hp-pinned-date">{formatDate(data.pubDate)}</span>
+    <h2 class="hp-pinned-title">{data.title}</h2>
+    <p class="hp-pinned-desc">{data.excerpt}</p>
+  </div>
+</a>

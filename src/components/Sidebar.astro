@@ -24,23 +24,49 @@ function formatCompact(value: number) {
   return `${(value / 1_000_000).toFixed(2)}M`;
 }
 
+const dotColors = ["green", "blue", "purple", "orange"];
+const thumbGradients = [
+  "linear-gradient(135deg,#fde68a,#f59e0b)",
+  "linear-gradient(135deg,#bbf7d0,#22c55e)",
+  "linear-gradient(135deg,#c7d2fe,#6366f1)",
+  "linear-gradient(135deg,#fee2e2,#ef4444)",
+  "linear-gradient(135deg,#fce7f3,#ec4899)",
+  "linear-gradient(135deg,#e0e7ff,#6366f1)",
+  "linear-gradient(135deg,#d1fae5,#10b981)",
+  "linear-gradient(135deg,#fef3c7,#d97706)"
+];
+const thumbIcons = ["⚡", "💡", "🔄", "⚛️", "🛡️", "🏗️", "🚀", "📘"];
 ---
 
-<aside class:list={["sidebar", variant === "article" && "article-sidebar", variant === "archive" && "archive-sidebar"]}>
+<aside class:list={["sidebar", variant === "article" && "article-sidebar"]}>
+
+  <!-- Author Card -->
   <div class="widget">
-    <div class="widget-header">关于作者</div>
+    <div class="widget-header">
+      <span class="card-title-dot"></span>
+      关于作者
+    </div>
     <div class="author-widget">
-      <div class="author-name">ZhuWei</div>
-      <div class:list={["author-bio", variant === "article" && "article-author-bio"]}>
-        前端工程师 / 开源爱好者
-        {variant === "article" ? <br /> : " "}
-        专注 React 生态 &amp; 架构设计
+      <div class="author-avatar">Z</div>
+      <div class="author-name">
+        ZhuWei
+        <span class="author-badge">博主</span>
       </div>
+      <div class="author-role">前端工程师 / 开源爱好者</div>
+      <div class="author-spec">专注 React 生态 &amp; 架构设计</div>
       <div class="social-links">
-        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">GitHub</a>
-        <a class="social-link" href="https://juejin.cn" target="_blank" rel="noreferrer" title="掘金" aria-label="掘金">掘金</a>
-        <a class="social-link" href="https://www.zhihu.com" target="_blank" rel="noreferrer" title="知乎" aria-label="知乎">知乎</a>
-        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮箱" aria-label="邮箱">邮箱</a>
+        <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        </a>
+        <a class="social-link" href="#" title="Twitter" aria-label="Twitter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        </a>
+        <a class="social-link" href="/rss.xml" title="RSS" aria-label="RSS">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+        <a class="social-link" href="mailto:hello@zhuwei.fun" title="邮件" aria-label="邮件">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
       </div>
       <div class="author-stats">
         <div class="author-stat">
@@ -48,35 +74,47 @@ function formatCompact(value: number) {
           <div class="author-stat-label">文章</div>
         </div>
         <div class="author-stat">
-          <div class="author-stat-val">{formatCompact(totalWords)}</div>
-          <div class="author-stat-label">字数</div>
+          <div class="author-stat-val">0</div>
+          <div class="author-stat-label">关注</div>
         </div>
         <div class="author-stat">
           <div class="author-stat-val">{formatCompact(totalViews)}</div>
-          <div class="author-stat-label">阅读</div>
+          <div class="author-stat-label">总阅读</div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Hot Articles -->
   <div class="widget">
-    <div class="widget-header">热门文章</div>
-    <ul class="rank-list">
+    <div class="widget-header">
+      <span class="card-title-dot"></span>
+      热门文章
+      <a href="/blog/" class="card-link">查看更多 ›</a>
+    </div>
+    <div class="rank-list">
       {hotPosts.map((post, index) => (
-        <li class="rank-item">
-          <span class="rank-num">{index + 1}.</span>
+        <div class="rank-item">
+          <span class="rank-num">{index + 1}</span>
+          <div class="hot-thumb" style={`background:${thumbGradients[index % thumbGradients.length]}`}>{thumbIcons[index % thumbIcons.length]}</div>
           <div class="rank-copy">
             <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
-            <span class="rank-count">{formatCompact(post.data.views)} 阅读</span>
+            <span class="rank-count">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              {formatCompact(post.data.views)}
+            </span>
           </div>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   </div>
 
   {showTagCloud && tags.length > 0 && (
     <div class="widget">
-      <div class="widget-header">标签云</div>
+      <div class="widget-header">
+        <span class="card-title-dot"></span>
+        标签云
+      </div>
       <div class="tag-cloud">
         {tags.map((tag) => (
           <a class="cloud-tag" href={`/tags/${slugifyTag(tag)}/`}>{tag}</a>
@@ -87,12 +125,15 @@ function formatCompact(value: number) {
 
   {showTimeline && timelinePosts.length > 0 && (
     <div class="widget">
-      <div class="widget-header">最近动态</div>
+      <div class="widget-header">
+        <span class="card-title-dot"></span>
+        最近动态
+      </div>
       <ul class="timeline-list">
         {timelinePosts.map((post) => (
           <li class="timeline-item">
             <div>
-              <div class="timeline-text"><strong>发布新文章</strong>「{post.data.title}」</div>
+              <div class="timeline-text">发布新文章《{post.data.title}》</div>
               <div class="timeline-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>
             </div>
           </li>

@@ -19,15 +19,27 @@ const navItems = [
 ];
 ---
 
-<header class:list={["site-header", variant === "article" && "article-site-header", variant === "archive" && "archive-site-header"]}>
-  <p><a class="logo" href="/">ZhuWei Blog</a></p>
-  <nav aria-label="主导航">
-    <ul class="nav-links">
-      {navItems.map((item) => (
-        <li>
-          <a href={item.href} aria-current={activePath === item.href ? "page" : undefined}>{item.label}</a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+<header class="site-header">
+  <div class="nav-inner">
+    <a class="logo" href="/">ZHUWEI<span class="logo-accent">.BLOG</span></a>
+    <nav aria-label="主导航">
+      <ul class="nav-links">
+        {navItems.map((item) => (
+          <li>
+            <a href={item.href} aria-current={activePath === item.href ? "page" : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <div class="search-box">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>搜索文章、关键词...</span>
+        <kbd class="search-kbd">⌘K</kbd>
+      </div>
+      <button class="icon-btn" aria-label="切换主题">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
 </header>
