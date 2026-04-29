@@ -5,7 +5,7 @@ pubDate: 2026-04-24
 category: "后端工程"
 section: "技术专栏"
 tags:
-  - HTTP/2
+  - HTTP2
   - 长连接
   - 多路复用
   - gRPC
