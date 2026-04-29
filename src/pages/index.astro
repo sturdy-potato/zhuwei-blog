@@ -88,22 +88,33 @@ const tabItems = [
 
         <div class="hp-stats-bar">
           <div class="hp-stat-item">
-            <div class="hp-stat-icon is-blue">📄</div>
-            <div class="hp-stat-info"><div class="hp-stat-label">文章总数</div><div class="hp-stat-value">{posts.length}</div></div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-icon is-purple">✍️</div>
-            <div class="hp-stat-info"><div class="hp-stat-label">总字数</div><div class="hp-stat-value">{totalWords.toLocaleString("zh-CN")}</div></div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-icon is-orange">👁</div>
-            <div class="hp-stat-info"><div class="hp-stat-label">总阅读量</div><div class="hp-stat-value">{totalViews.toLocaleString("zh-CN")} <span class="hp-stat-badge">▲ 5.1%</span></div></div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-icon is-green">👥</div>
             <div class="hp-stat-info">
+              <div class="hp-stat-value">{posts.length}</div>
+              <div class="hp-stat-label">文章总数</div>
+            </div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-info">
+              <div class="hp-stat-value">{totalWords.toLocaleString("zh-CN")}</div>
+              <div class="hp-stat-label">总字数</div>
+            </div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-info">
+              <div class="hp-stat-value">
+                {totalViews.toLocaleString("zh-CN")}
+                <span class="hp-stat-delta">↑ 5.1%</span>
+              </div>
+              <div class="hp-stat-label">总阅读量</div>
+            </div>
+          </div>
+          <div class="hp-stat-item">
+            <div class="hp-stat-info">
+              <div class="hp-stat-value">
+                <span data-live-visitors>2,486</span>
+                <span class="hp-stat-live" aria-hidden="true"></span>
+              </div>
               <div class="hp-stat-label">今日访客</div>
-              <div class="hp-stat-value"><span data-live-visitors>2,486</span><span class="hp-stat-live"></span></div>
             </div>
           </div>
         </div>

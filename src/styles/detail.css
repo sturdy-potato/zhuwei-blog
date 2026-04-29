@@ -32,13 +32,18 @@
   padding: 2px 10px; background: var(--primary-light);
   color: var(--primary); font-size: 12px; font-weight: 600;
   border-radius: var(--radius); text-decoration: none;
+  border: 1px solid var(--border);
 }
-.post-tag.blue { background: var(--primary-light); color: var(--primary); }
-.post-tag.green { background: #dcfce7; color: #16a34a; }
-.post-tag.purple { background: var(--primary-light); color: var(--primary); }
-.post-tag.amber { background: #fef9c3; color: #854d0e; }
-.post-tag.cyan { background: #e0f2fe; color: #0369a1; }
-.post-tag.red { background: #fee2e2; color: #ef4444; }
+.post-tag.blue,
+.post-tag.green,
+.post-tag.purple,
+.post-tag.amber,
+.post-tag.cyan,
+.post-tag.red {
+  background: #121212;
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
 .article-meta-item {
   display: flex; align-items: center; gap: 4px;
   font-size: 13px; color: var(--text-muted);
@@ -191,32 +196,46 @@
   display: flex; align-items: center; gap: 0;
   padding: 20px 40px; border-top: 1px solid var(--border);
   background: #121212;
+  border-left: 3px solid var(--primary);
 }
 .engagement-stat {
-  display: flex; align-items: center; gap: 8px; flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
 }
 .engagement-stat-icon {
-  color: var(--text-muted); display: flex;
+  color: #666;
+  display: flex;
 }
 .engagement-stat-icon svg { width: 20px; height: 20px; }
-.engagement-stat:nth-child(2) .engagement-stat-icon { color: #ef4444; }
-.engagement-stat:nth-child(3) .engagement-stat-icon { color: var(--primary); }
+.engagement-stat:hover .engagement-stat-icon { color: var(--primary); }
 .engagement-label {
   font-size: 12px; color: var(--text-muted); display: block; line-height: 1.2;
 }
 .engagement-stat strong {
-  font-size: 22px; font-weight: 700; color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
   display: block; line-height: 1.2;
 }
 .engagement-like {
-  background: var(--primary); color: #fff; border: none;
+  background: var(--primary);
+  color: #000;
+  border: 1px solid var(--primary);
   border-radius: var(--radius); padding: 10px 22px;
   font-size: 14px; font-weight: 600; font-family: inherit;
   cursor: pointer; display: flex; align-items: center; gap: 8px;
   transition: background .15s, transform .1s; flex-shrink: 0;
 }
 .engagement-like svg { width: 15px; height: 15px; }
-.engagement-like:hover { background: #d4b300; transform: translateY(-1px); color: #0f0f0f; }
+.engagement-like:hover {
+  background: #000;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  transform: translateY(-1px);
+}
 .engagement-like:active { transform: none; }
 
 /* ═══ COMMENTS ═══ */
