@@ -52,7 +52,31 @@ resolve_node_bin() {
   echo ""
 }
 
+resolve_git_branch() {
+  if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    # 中文注释：优先读取当前分支名，失败时回退到 main，避免部署元数据缺失。
+    git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main"
+    return 0
+  fi
+
+  echo "main"
+}
+
+resolve_git_hash() {
+  if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    # 中文注释：如果存在 Git 提交，则显式附带提交哈希，避免 Wrangler 自己解析异常元数据。
+    git rev-parse HEAD 2>/dev/null || true
+    return 0
+  fi
+
+  echo ""
+}
+
 NODE_BIN="$(resolve_node_bin)"
+GIT_BRANCH="$(resolve_git_branch)"
+GIT_HASH="$(resolve_git_hash)"
+# 中文注释：提交说明强制使用 ASCII，绕过 Cloudflare 对本地提交消息编码的严格校验。
+DEPLOY_MESSAGE="manual deploy from ${GIT_BRANCH}"
 
 if [ -z "$NODE_BIN" ]; then
   echo "未找到可用的 Node.js 运行时。Astro 6 需要 Node >= 22.12.0。"
@@ -78,4 +102,15 @@ if [ "$BUILD_ONLY" = "true" ]; then
 fi
 
 echo "开始发布到 Cloudflare Pages 项目: $PROJECT_NAME"
-npx wrangler pages deploy dist --project-name "$PROJECT_NAME"
+if [ -n "$GIT_HASH" ]; then
+  npx wrangler pages deploy dist \
+    --project-name "$PROJECT_NAME" \
+    --branch "$GIT_BRANCH" \
+    --commit-hash "$GIT_HASH" \
+    --commit-message "$DEPLOY_MESSAGE"
+else
+  npx wrangler pages deploy dist \
+    --project-name "$PROJECT_NAME" \
+    --branch "$GIT_BRANCH" \
+    --commit-message "$DEPLOY_MESSAGE"
+fi

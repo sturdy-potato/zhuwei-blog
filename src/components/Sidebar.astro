@@ -1,11 +1,47 @@
 ---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, getPostSlug, slugifyTag } from "../lib/blog";
+
 interface Props {
   variant?: "default" | "article" | "archive";
+  posts?: CollectionEntry<"blog">[];
+  tags?: string[];
+  showTagCloud?: boolean;
+  showTimeline?: boolean;
 }
 
-const { variant = "default" } = Astro.props;
+const {
+  variant = "default",
+  posts = [],
+  tags = [],
+  showTagCloud = false,
+  showTimeline = false,
+} = Astro.props;
+
+const recentPosts = posts.slice(0, 6);
+const timelinePosts = posts.slice(0, 4);
+const cloudTags = tags.slice(0, 18);
 
 ---
 
 <aside class:list={["sidebar", variant === "article" && "article-sidebar"]}>
+  {recentPosts.length > 0 && (
+    <section class="widget" aria-label="最新文章">
+      <div class="widget-header">
+        <span class="widget-header-dot"></span>
+        最新文章
+      </div>
+      <ol class="rank-list">
+        {recentPosts.map((post, idx) => (
+          <li class="rank-item">
+            <i class="rank-num" aria-hidden="true">{idx + 1}</i>
+            <span class="rank-copy">
+              <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
+              <span class="rank-count">{formatDate(post.data.pubDate)}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
 </aside>
