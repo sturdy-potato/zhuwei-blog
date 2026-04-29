@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+# 中文注释：无论脚本从哪个目录触发，都先切回仓库根目录，避免 dist/wrangler.jsonc 相对路径失效。
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+cd "$REPO_ROOT"
+
 # 中文注释：固定 Pages 项目名，避免每次手动输入时拼错。
 PROJECT_NAME="zhuwei-blog"
 # 中文注释：优先复用工作区自带的 Node 运行时，避免本机全局 Node 版本不满足 Astro 要求。

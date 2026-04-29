@@ -177,11 +177,6 @@ body {
 .hot-rank.r1, .rank-item:nth-child(1) .rank-num { color: var(--rank-1); }
 .hot-rank.r2, .rank-item:nth-child(2) .rank-num { color: var(--rank-2); }
 .hot-rank.r3, .rank-item:nth-child(3) .rank-num { color: var(--rank-3); }
-.hot-thumb {
-  width: 48px; height: 36px; border-radius: 6px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
-  object-fit: cover;
-}
 .hot-info, .rank-copy { flex: 1; min-width: 0; display: block; }
 .hot-title, .rank-name {
   font-size: 13px; font-weight: 500; color: var(--text-primary);

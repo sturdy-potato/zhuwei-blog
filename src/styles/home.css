@@ -270,15 +270,6 @@
 .hp-hot-num.is-n1 { color: var(--rank-1); }
 .hp-hot-num.is-n2 { color: var(--rank-2); }
 .hp-hot-num.is-n3 { color: var(--rank-3); }
-.hp-hot-thumb {
-  width: 48px; height: 36px; border-radius: 6px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
-}
-.hp-hot-thumb.is-t1 { background: linear-gradient(135deg, #fde68a, #f59e0b); }
-.hp-hot-thumb.is-t2 { background: linear-gradient(135deg, #bbf7d0, #22c55e); }
-.hp-hot-thumb.is-t3 { background: linear-gradient(135deg, #c7d2fe, #6366f1); }
-.hp-hot-thumb.is-t4 { background: linear-gradient(135deg, #fee2e2, #ef4444); }
-.hp-hot-thumb.is-t5 { background: linear-gradient(135deg, #fce7f3, #ec4899); }
 .hp-hot-body { flex: 1; min-width: 0; }
 .hp-hot-title {
   font-size: 13px; font-weight: 500; color: var(--text-primary);

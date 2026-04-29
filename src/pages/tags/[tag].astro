@@ -2,7 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FeaturedPost from "../../components/FeaturedPost.astro";
 import PostCard from "../../components/PostCard.astro";
-import QuickBar from "../../components/QuickBar.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import { getPublishedPosts, slugifyTag } from "../../lib/blog";
 
@@ -30,21 +29,23 @@ const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filter
   canonical={`/tags/${slugifyTag(tag)}/`}
   pageVariant="archive"
 >
-  <QuickBar tags={tags} activeTag={tag} variant="archive" />
-  <main class="page-main">
-    <div class="home-grid">
-      <section class="archive-shell">
-        <header class="archive-head">
-          <h1 class="archive-title">标签：{tag}</h1>
-          <p class="archive-intro">围绕「{tag}」这个主题，把相关文章聚合到一个可索引、可浏览、可持续扩展的独立内容入口中。</p>
-          <div class="archive-meta">共 {filteredPosts.length} 篇相关文章</div>
-        </header>
-        {featuredTagPost && <FeaturedPost post={featuredTagPost} forcePinned={false} variant="archive" />}
-        <div class="post-grid">
-          {filteredPosts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
-        </div>
-      </section>
-      <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
-    </div>
-  </main>
+  <div class="page-wrap">
+    <main>
+      <div class="hp-section-title" style="margin-bottom:12px;">
+        标签：{tag}
+        <span style="font-size:13px;font-weight:400;color:var(--text-muted);margin-left:auto;">共 {filteredPosts.length} 篇相关文章</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin:0 0 20px;">
+        围绕「{tag}」这个主题，把相关文章聚合到一个可索引、可浏览、可持续扩展的独立内容入口中。
+      </p>
+
+      {featuredTagPost && <FeaturedPost post={featuredTagPost} forcePinned={false} variant="archive" />}
+
+      <div class="hp-article-list">
+        {filteredPosts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
+      </div>
+    </main>
+
+    <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
+  </div>
 </BaseLayout>

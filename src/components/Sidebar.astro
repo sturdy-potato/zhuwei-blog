@@ -25,17 +25,6 @@ function formatCompact(value: number) {
 }
 
 const dotColors = ["green", "blue", "purple", "orange"];
-const thumbGradients = [
-  "linear-gradient(135deg,#fde68a,#f59e0b)",
-  "linear-gradient(135deg,#bbf7d0,#22c55e)",
-  "linear-gradient(135deg,#c7d2fe,#6366f1)",
-  "linear-gradient(135deg,#fee2e2,#ef4444)",
-  "linear-gradient(135deg,#fce7f3,#ec4899)",
-  "linear-gradient(135deg,#e0e7ff,#6366f1)",
-  "linear-gradient(135deg,#d1fae5,#10b981)",
-  "linear-gradient(135deg,#fef3c7,#d97706)"
-];
-const thumbIcons = ["⚡", "💡", "🔄", "⚛️", "🛡️", "🏗️", "🚀", "📘"];
 ---
 
 <aside class:list={["sidebar", variant === "article" && "article-sidebar"]}>
@@ -96,7 +85,6 @@ const thumbIcons = ["⚡", "💡", "🔄", "⚛️", "🛡️", "🏗️", "🚀
       {hotPosts.map((post, index) => (
         <div class="rank-item">
           <span class="rank-num">{index + 1}</span>
-          <div class="hot-thumb" style={`background:${thumbGradients[index % thumbGradients.length]}`}>{thumbIcons[index % thumbIcons.length]}</div>
           <div class="rank-copy">
             <a class="rank-name" href={`/blog/${getPostSlug(post)}/`}>{post.data.title}</a>
             <span class="rank-count">

@@ -15,10 +15,28 @@ function iconClass(color: string | undefined) {
   if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `is-${color}`;
   return "is-blue";
 }
+
+function getTitleBadgeChar(title: string) {
+  const trimmed = title.trim();
+  const firstVisibleChar = trimmed.match(/[^\s]/u)?.[0] ?? "";
+
+  if (/[\p{Script=Han}]/u.test(firstVisibleChar)) {
+    return trimmed.match(/[\p{Script=Han}]/u)?.[0] ?? "文";
+  }
+  if (/[A-Za-z]/.test(firstVisibleChar)) {
+    return firstVisibleChar.toUpperCase();
+  }
+
+  const fallbackHan = trimmed.match(/[\p{Script=Han}]/u)?.[0];
+  if (fallbackHan) return fallbackHan;
+  const fallbackLatin = trimmed.match(/[A-Za-z]/)?.[0];
+  if (fallbackLatin) return fallbackLatin.toUpperCase();
+  return "•";
+}
 ---
 
 <a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`}>
-  <div class:list={["hp-article-icon", iconClass(data.color)]}>{data.icon || "✦"}</div>
+  <div class:list={["hp-article-icon", iconClass(data.color)]}>{getTitleBadgeChar(data.title)}</div>
   <div class="hp-article-info">
     <div class="hp-article-meta">
       <span class:list={["hp-cat-tag", `hp-cat-${data.color || "blue"}`]}>{data.category}</span>
