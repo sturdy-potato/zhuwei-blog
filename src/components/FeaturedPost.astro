@@ -10,10 +10,12 @@ interface Props {
 
 const { post, forcePinned = true, variant = "default" } = Astro.props;
 const { data } = post;
+const slug = getPostSlug(post);
+const isOpenClaw = slug.includes("openclaw") || (data.tags ?? []).includes("OpenClaw");
 ---
 
-<a class="hp-pinned-card" href={`/blog/${getPostSlug(post)}/`}>
-  <div class="hp-pinned-img">
+<a class="hp-pinned-card" href={`/blog/${slug}/`}>
+  <div class:list={["hp-pinned-img", isOpenClaw && "is-openclaw"]}>
     <div class="hp-pinned-img-icon">&lt;/&gt;</div>
     <div class="hp-pinned-badge">PINNED</div>
   </div>

@@ -112,14 +112,27 @@
 .hp-pinned-card:hover { border-color: #c7d2fe; box-shadow: 0 4px 20px rgba(79,99,245,.1); }
 .hp-pinned-img {
   width: 100%; height: 200px; position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #0f1535 0%, #162055 40%, #1e3a8a 70%, #1d4ed8 100%);
+  background-color: #0f1535;
+  background-image: linear-gradient(135deg, #0f1535 0%, #162055 40%, #1e3a8a 70%, #1d4ed8 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex; align-items: center; justify-content: center;
+}
+.hp-pinned-img.is-openclaw {
+  background-image:
+    url("/images/downloaded-image.jpg"),
+    linear-gradient(135deg, #0f1535 0%, #162055 40%, #1e3a8a 70%, #1d4ed8 100%);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
 }
 .hp-pinned-img::before {
   content: ''; position: absolute; inset: 0;
   background:
     radial-gradient(circle at 20% 50%, rgba(99,102,241,.4) 0%, transparent 50%),
     radial-gradient(circle at 80% 30%, rgba(59,130,246,.3) 0%, transparent 40%);
+  opacity: .9;
 }
 .hp-pinned-img-icon {
   font-size: 32px; font-weight: 900; color: rgba(255,255,255,.15);

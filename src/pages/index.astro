@@ -138,7 +138,12 @@ const tabItems = [
 
         {pinned && (
           <a class="hp-pinned-card" href={`/blog/${getPostSlug(pinned)}/`}>
-            <div class="hp-pinned-img">
+            <div
+              class:list={[
+                "hp-pinned-img",
+                (getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) && "is-openclaw",
+              ]}
+            >
               <div class="hp-pinned-img-icon">&lt;/&gt;</div>
               <div class="hp-pinned-badge">PINNED</div>
             </div>
