@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Sidebar from "../components/Sidebar.astro";
 import { getPublishedPosts } from "../lib/blog";
 
 const posts = await getPublishedPosts();
+const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
+const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
 ---
 
 <BaseLayout
@@ -13,7 +14,7 @@ const posts = await getPublishedPosts();
   canonical="/about/"
 >
   <main class="article-page-main">
-    <div class="article-layout">
+    <div class="article-layout article-layout--single">
       <div>
         <article class="article-shell">
           <header class="article-head">
@@ -34,10 +35,19 @@ const posts = await getPublishedPosts();
             
             <blockquote>“用代码书写，以文字沉淀”——其实真相是：“用 AI 吹水，以 Token 续命”。</blockquote>
             <p>欢迎常来，只要余额还在，我就还在。</p>
+
+            <h2>关于作者</h2>
+            <p><strong>ZhuWei</strong> <span class="post-tag cyan" style="margin-left:8px;">博主</span></p>
+            <p>后端工程师 / 开源爱好者</p>
+            <p>PHP · Go · Python，偏好分布式与 AI 工程化</p>
+            <ul>
+              <li>文章：{posts.length.toLocaleString("zh-CN")}</li>
+              <li>字数：{totalWords.toLocaleString("zh-CN")}</li>
+              <li>阅读：{totalViews.toLocaleString("zh-CN")}</li>
+            </ul>
           </div>
         </article>
       </div>
-      <Sidebar posts={posts} showTagCloud={true} variant="article" />
     </div>
   </main>
 </BaseLayout>

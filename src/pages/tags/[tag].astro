@@ -2,7 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FeaturedPost from "../../components/FeaturedPost.astro";
 import PostCard from "../../components/PostCard.astro";
-import Sidebar from "../../components/Sidebar.astro";
 import { getPublishedPosts, slugifyTag } from "../../lib/blog";
 
 export async function getStaticPaths() {
@@ -18,7 +17,6 @@ export async function getStaticPaths() {
 const { tag } = Astro.props;
 const { tag: tagSlug } = Astro.params;
 const posts = await getPublishedPosts();
-const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 const filteredPosts = posts.filter((post) => post.data.tags.some((item) => slugifyTag(item) === tagSlug));
 const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filteredPosts[0];
 ---
@@ -29,7 +27,7 @@ const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filter
   canonical={`/tags/${slugifyTag(tag)}/`}
   pageVariant="archive"
 >
-  <div class="page-wrap">
+  <div class="page-wrap page-wrap--single">
     <main>
       <div class="hp-section-title" style="margin-bottom:12px;">
         标签：{tag}
@@ -45,7 +43,5 @@ const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filter
         {filteredPosts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
       </div>
     </main>
-
-    <Sidebar posts={posts} tags={tags} showTagCloud={true} showTimeline={true} variant="archive" />
   </div>
 </BaseLayout>

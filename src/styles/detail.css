@@ -7,6 +7,10 @@
   display: grid; grid-template-columns: 1fr 300px;
   gap: 28px; align-items: start;
 }
+.article-layout.article-layout--single {
+  grid-template-columns: minmax(0, 820px);
+  justify-content: center;
+}
 
 /* ═══ ARTICLE CARD ═══ */
 .article-shell {

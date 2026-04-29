@@ -105,6 +105,10 @@ body {
   max-width: 1200px; margin: 0 auto; padding: 28px 32px 80px;
   display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start;
 }
+.page-wrap.page-wrap--single {
+  grid-template-columns: minmax(0, 820px);
+  justify-content: center;
+}
 
 /* ═══ SIDEBAR ═══ */
 .sidebar { display: flex; flex-direction: column; gap: 20px; }
