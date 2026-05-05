@@ -205,16 +205,16 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
       if (result.ok) renderComments(result.comments || []);
     };
 
-    fetch(`${baseUrl}/view`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ initialViews, initialLikes, initialComments })
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.ok) updateMetrics(result.metrics);
-      })
-      .catch(() => {});
+    const recordView = async () => {
+      const response = await fetch(`${baseUrl}/view`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ initialViews, initialLikes, initialComments })
+      });
+      const result = await response.json();
+      if (result.ok) updateMetrics(result.metrics);
+      return result;
+    };
 
     likeButton instanceof HTMLButtonElement &&
       likeButton.addEventListener("click", async () => {
@@ -267,7 +267,13 @@ const { slug, initialViews, initialLikes = 0, initialComments } = Astro.props;
         await loadComments();
       });
 
-    loadStats().catch(() => {});
+    // 中文注释：先写入阅读事件再拉取统计，避免并发请求导致较旧的 stats 把最新阅读数覆盖掉。
+    recordView()
+      .catch(() => null)
+      .then((result) => {
+        if (!result?.ok) return loadStats().catch(() => {});
+        return undefined;
+      });
     loadComments().catch(() => {});
   }
 
