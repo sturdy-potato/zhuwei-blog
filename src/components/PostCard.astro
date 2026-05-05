@@ -35,7 +35,7 @@ function getTitleBadgeChar(title: string) {
 }
 ---
 
-<a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`}>
+<a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`} data-post-slug={getPostSlug(post)}>
   <div class:list={["hp-article-icon", iconClass(data.color)]}>{getTitleBadgeChar(data.title)}</div>
   <div class="hp-article-info">
     <div class="hp-article-meta">
@@ -46,11 +46,11 @@ function getTitleBadgeChar(title: string) {
     <div class="hp-article-title">{data.title}</div>
     <div class="hp-article-desc">{data.excerpt}</div>
     <div class="hp-article-footer">
-      <div class="hp-article-stat">
+      <div class="hp-article-stat" data-post-views={getPostSlug(post)}>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         {formatNumber(data.views)}
       </div>
-      <div class="hp-article-stat">
+      <div class="hp-article-stat" data-post-comments={getPostSlug(post)}>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         {formatNumber(data.comments)}
       </div>

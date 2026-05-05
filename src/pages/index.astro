@@ -101,7 +101,7 @@ const tabItems = [
           </div>
           <div class="hp-stat-item">
             <div class="hp-stat-info">
-              <div class="hp-stat-value">
+              <div class="hp-stat-value" data-total-views>
                 {totalViews.toLocaleString("zh-CN")}
                 <span class="hp-stat-delta">↑ 5.1%</span>
               </div>
@@ -142,7 +142,7 @@ const tabItems = [
         <div class="hp-section-title">最新文章</div>
         <div class="hp-article-list">
           {posts.map((post, index) => (
-            <a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`}>
+            <a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`} data-post-slug={getPostSlug(post)}>
               <div class:list={["hp-article-icon", iconClass(post.data.color)]}>{getTitleBadgeChar(post.data.title)}</div>
               <div class="hp-article-info">
                 <div class="hp-article-meta">
@@ -153,8 +153,8 @@ const tabItems = [
                 <div class="hp-article-title">{post.data.title}</div>
                 <div class="hp-article-desc">{post.data.excerpt}</div>
                 <div class="hp-article-footer">
-                  <div class="hp-article-stat">👁 {post.data.views.toLocaleString("zh-CN")}</div>
-                  <div class="hp-article-stat">💬 {post.data.comments.toLocaleString("zh-CN")}</div>
+                  <div class="hp-article-stat" data-post-views={getPostSlug(post)}>👁 {post.data.views.toLocaleString("zh-CN")}</div>
+                  <div class="hp-article-stat" data-post-comments={getPostSlug(post)}>💬 {post.data.comments.toLocaleString("zh-CN")}</div>
                   <div class="hp-article-stat">⏱ {post.data.minutes} min</div>
                 </div>
               </div>
@@ -172,7 +172,7 @@ const tabItems = [
                 <div class:list={["hp-hot-num", `is-n${index + 1}`]}>{index + 1}</div>
                 <div class="hp-hot-body">
                   <div class="hp-hot-title">{post.data.title}</div>
-                  <div class="hp-hot-reads">{post.data.views} 阅读</div>
+                  <div class="hp-hot-reads" data-hot-reads={getPostSlug(post)}>{post.data.views} 阅读</div>
                 </div>
               </a>
             ))}
@@ -182,3 +182,66 @@ const tabItems = [
     </div>
   </div>
 </BaseLayout>
+
+<script is:inline>
+  // 中文注释：首页在客户端批量拉取 D1 聚合统计，覆盖构建期 frontmatter 的初始值。
+  const slugNodes = document.querySelectorAll("[data-post-slug]");
+  const slugs = Array.from(slugNodes)
+    .map((node) => (node instanceof HTMLElement ? node.dataset.postSlug : ""))
+    .filter(Boolean);
+
+  if (slugs.length) {
+    const uniqueSlugs = [...new Set(slugs)];
+    fetch(`/api/posts/metrics?slugs=${encodeURIComponent(uniqueSlugs.join(","))}`)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!result?.ok || !result.metrics) return;
+        const metrics = result.metrics;
+
+        let totalViews = 0;
+        for (const slug of uniqueSlugs) {
+          const item = metrics[slug];
+          if (!item) continue;
+          totalViews += Number(item.views || 0);
+
+          const viewNodes = document.querySelectorAll(`[data-post-views="${slug}"]`);
+          for (const viewNode of viewNodes) {
+            if (!(viewNode instanceof HTMLElement)) continue;
+            if (viewNode.textContent?.includes("👁")) {
+              viewNode.textContent = `👁 ${Number(item.views || 0).toLocaleString("zh-CN")}`;
+            } else {
+              const icon = viewNode.querySelector("svg");
+              viewNode.textContent = Number(item.views || 0).toLocaleString("zh-CN");
+              if (icon) viewNode.prepend(icon);
+            }
+          }
+
+          const commentNodes = document.querySelectorAll(`[data-post-comments="${slug}"]`);
+          for (const commentNode of commentNodes) {
+            if (!(commentNode instanceof HTMLElement)) continue;
+            if (commentNode.textContent?.includes("💬")) {
+              commentNode.textContent = `💬 ${Number(item.comment_count || 0).toLocaleString("zh-CN")}`;
+            } else {
+              const icon = commentNode.querySelector("svg");
+              commentNode.textContent = Number(item.comment_count || 0).toLocaleString("zh-CN");
+              if (icon) commentNode.prepend(icon);
+            }
+          }
+
+          const hotReadsNodes = document.querySelectorAll(`[data-hot-reads="${slug}"]`);
+          for (const hotNode of hotReadsNodes) {
+            if (!(hotNode instanceof HTMLElement)) continue;
+            hotNode.textContent = `${Number(item.views || 0).toLocaleString("zh-CN")} 阅读`;
+          }
+        }
+
+        const totalViewsEl = document.querySelector("[data-total-views]");
+        if (totalViewsEl instanceof HTMLElement) {
+          const delta = totalViewsEl.querySelector(".hp-stat-delta");
+          totalViewsEl.textContent = totalViews.toLocaleString("zh-CN");
+          if (delta) totalViewsEl.append(" ", delta);
+        }
+      })
+      .catch(() => {});
+  }
+</script>

@@ -45,3 +45,43 @@ const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filter
     </main>
   </div>
 </BaseLayout>
+
+<script is:inline>
+  // 中文注释：标签页在客户端批量拉取 D1 统计，保证列表阅读和评论显示真实值。
+  const tagSlugNodes = document.querySelectorAll("[data-post-slug]");
+  const tagSlugs = Array.from(tagSlugNodes)
+    .map((node) => (node instanceof HTMLElement ? node.dataset.postSlug : ""))
+    .filter(Boolean);
+
+  if (tagSlugs.length) {
+    const uniqueTagSlugs = [...new Set(tagSlugs)];
+    fetch(`/api/posts/metrics?slugs=${encodeURIComponent(uniqueTagSlugs.join(","))}`)
+      .then((response) => response.json())
+      .then((result) => {
+        if (!result?.ok || !result.metrics) return;
+        const metrics = result.metrics;
+
+        for (const slug of uniqueTagSlugs) {
+          const item = metrics[slug];
+          if (!item) continue;
+
+          const viewNodes = document.querySelectorAll(`[data-post-views="${slug}"]`);
+          for (const viewNode of viewNodes) {
+            if (!(viewNode instanceof HTMLElement)) continue;
+            const icon = viewNode.querySelector("svg");
+            viewNode.textContent = Number(item.views || 0).toLocaleString("zh-CN");
+            if (icon) viewNode.prepend(icon);
+          }
+
+          const commentNodes = document.querySelectorAll(`[data-post-comments="${slug}"]`);
+          for (const commentNode of commentNodes) {
+            if (!(commentNode instanceof HTMLElement)) continue;
+            const icon = commentNode.querySelector("svg");
+            commentNode.textContent = Number(item.comment_count || 0).toLocaleString("zh-CN");
+            if (icon) commentNode.prepend(icon);
+          }
+        }
+      })
+      .catch(() => {});
+  }
+</script>
