@@ -25,6 +25,22 @@
   --shadow: none;
 }
 
+html[data-theme="light"] {
+  --primary: #b88600;
+  --primary-light: #fff3c4;
+  --primary-mid: #ffd56a;
+  --bg: #f7f7f7;
+  --surface: #ffffff;
+  --border: #e6e6e6;
+  --text-primary: #111111;
+  --text-secondary: #2b2b2b;
+  --text-muted: #666666;
+  --tag-bg: #f2f2f2;
+  --tag-text: #333333;
+  --rank-3: #6b6b6b;
+  --rank-n: #888;
+}
+
 html { scroll-behavior: smooth; }
 body {
   font-family: 'JetBrains Mono', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -81,13 +97,13 @@ body {
 }
 .search-box {
   display: flex; align-items: center; gap: 8px;
-  background: #111; border: 1px solid var(--border); border-radius: 0;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 0;
   padding: 5px 12px; cursor: pointer; transition: border-color .15s; white-space: nowrap;
 }
 .search-box:hover { border-color: var(--primary); }
 .search-box span { font-size: 13px; color: var(--text-muted); }
 .search-kbd {
-  background: #0f0f0f; border: 1px solid var(--border); border-radius: 0;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 0;
   padding: 1px 5px; font-size: 11px; color: var(--text-muted);
   font-family: 'JetBrains Mono', monospace;
 }
@@ -98,7 +114,7 @@ body {
   color: var(--text-secondary); transition: background .15s, color .15s;
   background: transparent; border: none;
 }
-.icon-btn:hover { background: #101010; color: var(--primary); }
+.icon-btn:hover { background: var(--bg); color: var(--primary); }
 
 /* ═══ LAYOUT ═══ */
 .page-wrap {
@@ -170,7 +186,7 @@ body {
 .hot-list, .rank-list { padding: 0 20px 16px; list-style: none; margin: 0; }
 .hot-item, .rank-item {
   display: flex; align-items: center; gap: 12px; padding: 9px 0;
-  border-bottom: 1px solid #f3f4f8; cursor: pointer; margin: 0;
+  border-bottom: 1px solid var(--border); cursor: pointer; margin: 0;
 }
 .hot-item:last-child, .rank-item:last-child { border-bottom: none; }
 .hot-rank, .rank-num {
@@ -208,7 +224,7 @@ body {
 .activity-list, .timeline-list { padding: 0 20px 16px; list-style: none; margin: 0; }
 .activity-item, .timeline-item {
   display: flex; gap: 10px; padding: 9px 0;
-  border-bottom: 1px solid #f3f4f8; margin: 0;
+  border-bottom: 1px solid var(--border); margin: 0;
 }
 .activity-item:last-child, .timeline-item:last-child { border-bottom: none; }
 .activity-dot, .timeline-item::before {

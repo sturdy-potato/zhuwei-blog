@@ -31,6 +31,34 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (() => {
+        const STORAGE_KEY = "theme-mode";
+        const safeGetMode = () => {
+          try {
+            const value = localStorage.getItem(STORAGE_KEY);
+            return value === "light" || value === "dark" || value === "system" ? value : "system";
+          } catch {
+            return "system";
+          }
+        };
+        const resolveTheme = (mode) => {
+          if (mode === "light" || mode === "dark") return mode;
+          try {
+            return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          } catch {
+            return "dark";
+          }
+        };
+
+        const mode = safeGetMode();
+        const theme = resolveTheme(mode);
+        document.documentElement.dataset.themeMode = mode;
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <SeoHead title={title} description={description} canonical={canonical} type={type} />
@@ -42,5 +70,87 @@ const {
     <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到顶部">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
+    <script is:inline>
+      (() => {
+        const STORAGE_KEY = "theme-mode";
+        const modes = ["system", "light", "dark"];
+
+        const safeGetMode = () => {
+          try {
+            const value = localStorage.getItem(STORAGE_KEY);
+            return value === "light" || value === "dark" || value === "system" ? value : "system";
+          } catch {
+            return "system";
+          }
+        };
+
+        const safeSetMode = (mode) => {
+          try {
+            localStorage.setItem(STORAGE_KEY, mode);
+          } catch {
+            // ignore storage failures
+          }
+        };
+
+        const resolveTheme = (mode) => {
+          if (mode === "light" || mode === "dark") return mode;
+          try {
+            return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          } catch {
+            return "dark";
+          }
+        };
+
+        const labelForMode = (mode) => {
+          if (mode === "light") return "亮色";
+          if (mode === "dark") return "暗色";
+          return "跟随系统";
+        };
+
+        const applyMode = (mode, persist = true) => {
+          const theme = resolveTheme(mode);
+          document.documentElement.dataset.themeMode = mode;
+          document.documentElement.dataset.theme = theme;
+          if (persist) safeSetMode(mode);
+
+          const btn = document.querySelector("[data-theme-toggle]");
+          if (btn) {
+            btn.setAttribute("aria-label", `主题：${labelForMode(mode)}，点击切换`);
+            btn.setAttribute("title", `主题：${labelForMode(mode)}（点击切换）`);
+          }
+        };
+
+        const getNextMode = (mode) => {
+          const idx = modes.indexOf(mode);
+          return modes[(idx + 1) % modes.length] ?? "system";
+        };
+
+        applyMode(safeGetMode(), false);
+
+        const btn = document.querySelector("[data-theme-toggle]");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            const next = getNextMode(safeGetMode());
+            applyMode(next, true);
+          });
+        }
+
+        try {
+          if (window.matchMedia) {
+            const mql = window.matchMedia("(prefers-color-scheme: dark)");
+            const onChange = () => {
+              const mode = safeGetMode();
+              if (mode === "system") applyMode("system", false);
+            };
+            if (typeof mql.addEventListener === "function") mql.addEventListener("change", onChange);
+            else if (typeof mql.addListener === "function") mql.addListener(onChange);
+          }
+        } catch {
+          // ignore
+        }
+      })();
+    </script>
   </body>
 </html>
