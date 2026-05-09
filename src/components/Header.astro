@@ -4,9 +4,11 @@ import { slugifyTag } from "../lib/blog";
 interface Props {
   activePath?: string;
   variant?: "default" | "article" | "archive";
+  // 中文注释：可由 BaseLayout 透传，覆盖默认搜索提示
+  searchPlaceholder?: string;
 }
 
-const { activePath, variant = "default" } = Astro.props;
+const { activePath, variant = "default", searchPlaceholder } = Astro.props;
 
 const navItems = [
   { href: "/", label: "首页" },
@@ -44,7 +46,7 @@ function isActive(href: string) {
     <div class="nav-actions">
       <div class="search-box">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <span>搜索文章、关键词...</span>
+        <span>{searchPlaceholder ?? "搜索文章、关键词..."}</span>
         <kbd class="search-kbd">⌘K</kbd>
       </div>
       <button class="icon-btn" data-theme-toggle aria-label="主题：跟随系统，点击切换" title="主题：跟随系统（点击切换）">

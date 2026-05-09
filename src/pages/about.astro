@@ -4,7 +4,9 @@ import { getPublishedPosts } from "../lib/blog";
 
 const posts = await getPublishedPosts();
 const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
-const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
+const totalViews = posts.reduce((sum, post) => sum + (Number(post.data.views) || 0), 0);
+// 关于页统计：阅读为 0 时不展示，避免“冷启动尴尬”
+const shouldShowViews = totalViews > 0;
 ---
 
 <BaseLayout
@@ -37,14 +39,36 @@ const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
             <p>欢迎常来，只要余额还在，我就还在。</p>
 
             <h2>关于作者</h2>
-            <p><strong>ZhuWei</strong> <span class="post-tag cyan" style="margin-left:8px;">博主</span></p>
-            <p>后端工程师 / 开源爱好者</p>
-            <p>PHP · Go · Python，偏好分布式与 AI 工程化</p>
-            <ul>
-              <li>文章：{posts.length.toLocaleString("zh-CN")}</li>
-              <li>字数：{totalWords.toLocaleString("zh-CN")}</li>
-              <li>阅读：{totalViews.toLocaleString("zh-CN")}</li>
-            </ul>
+            <section class="about-author-card" aria-label="作者信息">
+              <div class="about-author-top">
+                <div class="about-author-avatar" aria-hidden="true">ZW</div>
+                <div class="about-author-title">
+                  <div class="about-author-name">
+                    <strong>ZhuWei</strong>
+                    <span class="post-tag cyan about-author-tag">博主</span>
+                  </div>
+                  <div class="about-author-role">后端工程师 / 开源爱好者</div>
+                  <div class="about-author-spec">PHP · Go · Python，偏好分布式与 AI 工程化</div>
+                </div>
+              </div>
+
+              <div class="about-author-stats" role="list">
+                <div class="about-stat" role="listitem">
+                  <div class="about-stat-value">{posts.length.toLocaleString("zh-CN")}</div>
+                  <div class="about-stat-label">文章</div>
+                </div>
+                <div class="about-stat" role="listitem">
+                  <div class="about-stat-value">{totalWords.toLocaleString("zh-CN")}</div>
+                  <div class="about-stat-label">字数</div>
+                </div>
+                {shouldShowViews && (
+                  <div class="about-stat" role="listitem">
+                    <div class="about-stat-value">{totalViews.toLocaleString("zh-CN")}</div>
+                    <div class="about-stat-label">阅读</div>
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
         </article>
       </div>

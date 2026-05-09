@@ -13,6 +13,8 @@ interface Props {
   canonical?: string;
   type?: "website" | "article";
   pageVariant?: "default" | "article" | "archive";
+  // 中文注释：用于首页等页面自定义顶部搜索框提示文案
+  searchPlaceholder?: string;
 }
 
 const {
@@ -21,7 +23,8 @@ const {
   activePath,
   canonical,
   type = "website",
-  pageVariant = "default"
+  pageVariant = "default",
+  searchPlaceholder
 } = Astro.props;
 ---
 
@@ -64,7 +67,7 @@ const {
     <SeoHead title={title} description={description} canonical={canonical} type={type} />
   </head>
   <body>
-    <Header activePath={activePath} variant={pageVariant} />
+    <Header activePath={activePath} variant={pageVariant} searchPlaceholder={searchPlaceholder} />
     <slot />
     <Footer variant={pageVariant} />
     <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到顶部">

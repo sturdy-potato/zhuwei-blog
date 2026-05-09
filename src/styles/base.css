@@ -103,8 +103,12 @@ body {
 .search-box:hover { border-color: var(--primary); }
 .search-box span { font-size: 13px; color: var(--text-muted); }
 .search-kbd {
-  background: var(--bg); border: 1px solid var(--border); border-radius: 0;
-  padding: 1px 5px; font-size: 11px; color: var(--text-muted);
+  background: var(--primary-light);
+  border: 1px solid var(--primary-mid);
+  border-radius: 0;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: var(--primary);
   font-family: 'JetBrains Mono', monospace;
 }
 .icon-btn {
