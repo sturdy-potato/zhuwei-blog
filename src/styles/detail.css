@@ -40,7 +40,7 @@
 .post-tag.amber,
 .post-tag.cyan,
 .post-tag.red {
-  background: #121212;
+  background: var(--surface-2);
   color: var(--primary);
   border: 1px solid var(--border);
 }
@@ -124,7 +124,7 @@
 }
 .article-content blockquote {
   border-left: 3px solid var(--primary);
-  background: #15130a;
+  background: var(--blockquote-bg);
   padding: 14px 20px; border-radius: 0 var(--radius) var(--radius) 0;
   margin: 24px 0; font-size: 14.5px; color: var(--text-secondary);
 }
@@ -132,7 +132,7 @@
 .article-content pre {
   overflow: auto; padding: 16px 20px;
   border-radius: var(--radius);
-  background: #111111; color: #f0f0f0;
+  background: var(--code-bg); color: var(--code-text);
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px; line-height: 1.6;
   margin-bottom: 18px;
@@ -141,8 +141,8 @@
 .article-content pre.astro-code,
 .article-content pre.astro-code.github-light,
 .article-content pre.astro-code.github-dark {
-  background: #111111 !important;
-  color: #f0f0f0 !important;
+  background: var(--code-bg) !important;
+  color: var(--code-text) !important;
   border: 1px solid var(--border);
 }
 .article-content pre.astro-code span {
@@ -181,7 +181,7 @@
   margin-top: 18px;
   padding: 20px;
   border: 1px solid var(--border);
-  background: #121212;
+  background: var(--surface-2);
 }
 .about-author-top {
   display: flex;
@@ -252,7 +252,7 @@
 .article-nav {
   display: flex; justify-content: space-between; gap: 16px;
   padding: 20px 40px; border-top: 1px solid var(--border);
-  background: #121212; border: none; margin: 0;
+  background: var(--surface-2); border: none; margin: 0;
 }
 .article-nav a {
   font-size: 13px; color: var(--primary); text-decoration: none;
@@ -267,7 +267,7 @@
 .engagement-summary {
   display: flex; align-items: center; gap: 0;
   padding: 20px 40px; border-top: 1px solid var(--border);
-  background: #121212;
+  background: var(--surface-2);
   border-left: 3px solid var(--primary);
 }
 .engagement-stat {
