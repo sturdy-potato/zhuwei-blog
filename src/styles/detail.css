@@ -460,3 +460,337 @@
   .about-author-top { align-items: flex-start; }
   .about-author-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* 中文注释：详情页测试为便签阅读风格，集中覆盖在文件尾部，便于对比分支快速回退。 */
+body:has(.article-page-main) {
+  background:
+    linear-gradient(90deg, rgba(120, 84, 32, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, #f5eee0 0%, #efe2c8 100%);
+  background-size: 28px 28px, auto;
+}
+
+body:has(.article-page-main) .site-header {
+  background: rgba(250, 244, 232, 0.92);
+  border-bottom-color: rgba(118, 78, 30, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+body:has(.article-page-main) .search-box,
+body:has(.article-page-main) .icon-btn:hover {
+  background: rgba(255, 250, 238, 0.72);
+  border-color: rgba(118, 78, 30, 0.18);
+}
+
+.article-page-main {
+  background: transparent;
+}
+
+.article-layout {
+  max-width: 1180px;
+  grid-template-columns: minmax(0, 820px) 280px;
+  gap: 34px;
+  padding-top: 34px;
+}
+
+.article-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(122, 83, 33, 0.24);
+  border-radius: 6px 6px 12px 12px;
+  background:
+    linear-gradient(90deg, rgba(190, 65, 48, 0.28) 0 2px, transparent 2px 100%),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(122, 83, 33, 0.13) 32px
+    ),
+    #fff8df;
+  box-shadow: 0 18px 48px rgba(96, 62, 22, 0.18), 0 2px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.article-shell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 8px;
+  background: linear-gradient(90deg, #d84f38, #f2a43a 45%, #f5ce64);
+}
+
+.article-shell::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 0;
+  left: 70px;
+  width: 1px;
+  background: rgba(210, 81, 70, 0.28);
+  pointer-events: none;
+}
+
+.article-head {
+  position: relative;
+  padding: 42px 56px 0 96px;
+  z-index: 1;
+}
+
+.article-meta {
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.post-tag,
+.post-tag.blue,
+.post-tag.green,
+.post-tag.purple,
+.post-tag.amber,
+.post-tag.cyan,
+.post-tag.red {
+  border: 1px solid rgba(133, 83, 26, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 236, 177, 0.7);
+  color: #8a4f12;
+}
+
+.article-meta-item {
+  color: #906b3d;
+}
+
+.article-title {
+  max-width: 680px;
+  color: #2e2418;
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.article-summary {
+  max-width: 660px;
+  color: #725836;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.detail-tags {
+  margin-bottom: 30px;
+}
+
+.tag-pill {
+  border: 1px solid rgba(133, 83, 26, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  color: #8a5d22;
+}
+
+.tag-pill:hover {
+  background: #fff0b6;
+  color: #6f3b08;
+}
+
+.article-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  padding: 0 56px 44px 96px;
+}
+
+.article-content p,
+.article-content li,
+.article-content blockquote {
+  color: #3f3326;
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 2.05;
+}
+
+.article-content p {
+  margin-bottom: 18px;
+}
+
+.article-content h2 {
+  margin: 36px 0 16px;
+  color: #2e2418;
+  font-size: 21px;
+  letter-spacing: 0;
+}
+
+.article-content h2::before {
+  width: 6px;
+  height: 22px;
+  border-radius: 999px;
+  background: #d8563f;
+}
+
+.article-content h3 {
+  margin: 30px 0 12px;
+  color: #3a2a1b;
+  font-size: 18px;
+}
+
+.article-content a {
+  color: #b04f17;
+  text-decoration-color: rgba(176, 79, 23, 0.35);
+  text-underline-offset: 4px;
+}
+
+.article-content ul li::before {
+  top: 15px;
+  border-radius: 50%;
+  background: #d8563f;
+}
+
+.article-content ol li::before {
+  top: 5px;
+  background: #ffe7a3;
+  color: #8a4f12;
+}
+
+.article-content blockquote {
+  border-left: 4px solid #d8563f;
+  border-radius: 0 8px 8px 0;
+  background: rgba(255, 238, 188, 0.56);
+}
+
+.article-content code {
+  background: rgba(255, 223, 126, 0.55);
+  color: #8a3f11;
+}
+
+.article-content pre,
+.article-content pre.astro-code,
+.article-content pre.astro-code.github-light,
+.article-content pre.astro-code.github-dark {
+  border-color: rgba(122, 83, 33, 0.2);
+  border-radius: 8px;
+  background: #2a241d !important;
+  color: #fff4d4 !important;
+}
+
+.engagement-shell {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 20px 56px 36px 96px;
+  border-top: 1px dashed rgba(122, 83, 33, 0.22);
+  background: rgba(255, 248, 223, 0.62);
+}
+
+.engagement-summary {
+  padding: 0;
+}
+
+.engagement-stat strong,
+.comments-title,
+.comment-item-head strong {
+  color: #2e2418;
+}
+
+.engagement-label,
+.comment-meta,
+.comment-feedback,
+.comment-empty-state p,
+.comment-item-head span {
+  color: #906b3d;
+}
+
+.engagement-like,
+.comment-submit {
+  border-color: #c7552f;
+  border-radius: 999px;
+  background: #c7552f;
+  color: #fffaf0;
+}
+
+.engagement-like:hover,
+.comment-submit:hover {
+  border-color: #8e341c;
+  background: #8e341c;
+  color: #fffaf0;
+}
+
+.comment-shell {
+  margin-top: 18px;
+  border-color: rgba(122, 83, 33, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 251, 236, 0.78);
+  box-shadow: none;
+}
+
+.comment-header,
+.comment-empty-state,
+.comment-form,
+.comment-item {
+  border-color: rgba(122, 83, 33, 0.18);
+}
+
+.comment-field input,
+.comment-field textarea {
+  border-bottom-color: rgba(122, 83, 33, 0.28);
+  color: #2e2418;
+}
+
+.comment-avatar {
+  background: linear-gradient(135deg, #b9472e, #f0a33a);
+  color: #fffaf0;
+}
+
+.article-sidebar .widget {
+  border: 1px solid rgba(122, 83, 33, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 250, 238, 0.78);
+  box-shadow: 0 10px 30px rgba(96, 62, 22, 0.08);
+}
+
+.article-sidebar .widget-header,
+.article-sidebar .author-name,
+.article-sidebar .rank-name {
+  color: #342717;
+}
+
+.article-sidebar .widget-header-dot,
+.article-sidebar .card-title-dot {
+  border-radius: 999px;
+  background: #d8563f;
+}
+
+.article-sidebar .cloud-tag,
+.article-sidebar .author-badge {
+  background: rgba(255, 236, 177, 0.7);
+  color: #8a4f12;
+}
+
+.article-sidebar .timeline-dot {
+  background: #d8563f;
+}
+
+@media (max-width: 900px) {
+  .article-layout {
+    padding: 22px 14px 56px;
+  }
+
+  .article-shell::after {
+    left: 24px;
+  }
+
+  .article-head,
+  .article-content,
+  .engagement-shell {
+    padding-left: 42px;
+    padding-right: 22px;
+  }
+
+  .article-title {
+    font-size: 25px;
+  }
+
+  .article-content p,
+  .article-content li,
+  .article-content blockquote {
+    font-size: 15.5px;
+    line-height: 1.95;
+  }
+}
