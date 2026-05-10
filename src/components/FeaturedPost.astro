@@ -6,16 +6,19 @@ interface Props {
   post: CollectionEntry<"blog">;
   forcePinned?: boolean;
   variant?: "default" | "archive";
+  coverImage?: string;
 }
 
-const { post, forcePinned = true, variant = "default" } = Astro.props;
+const { post, forcePinned = true, variant = "default", coverImage } = Astro.props;
 const { data } = post;
 const slug = getPostSlug(post);
 const isOpenClaw = slug.includes("openclaw") || (data.tags ?? []).includes("OpenClaw");
+// 中文注释：支持外部传入专题封面图，优先级高于默认分类封面。
+const pinnedImageStyle = coverImage ? `background-image: url("${coverImage}"), linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);` : undefined;
 ---
 
 <a class="hp-pinned-card" href={`/blog/${slug}/`}>
-  <div class:list={["hp-pinned-img", isOpenClaw && "is-openclaw"]}>
+  <div class:list={["hp-pinned-img", !coverImage && isOpenClaw && "is-openclaw"]} style={pinnedImageStyle}>
     <div class="hp-pinned-img-icon">&lt;/&gt;</div>
     <div class="hp-pinned-badge">PINNED</div>
   </div>

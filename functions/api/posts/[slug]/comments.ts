@@ -24,7 +24,12 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const comments = await context.env.BLOG_DB.prepare(
     `
-      SELECT id, nickname, content, created_at
+      SELECT
+        id,
+        nickname,
+        content,
+        -- 中文注释：D1/SQLite 的 CURRENT_TIMESTAMP 是 UTC；这里转成东八区再返回给前端展示。
+        strftime('%Y-%m-%d %H:%M:%S', created_at, '+8 hours') AS created_at
       FROM comments
       WHERE post_slug = ?1
         AND status = 'approved'

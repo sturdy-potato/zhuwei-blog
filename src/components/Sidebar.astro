@@ -1,11 +1,13 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatDate, getPostSlug, slugifyTag } from "../lib/blog";
+import { formatDate, getPostSlug } from "../lib/blog";
+import Toc from "./Toc.astro";
 
 interface Props {
   variant?: "default" | "article" | "archive";
   posts?: CollectionEntry<"blog">[];
   tags?: string[];
+  headings?: { depth: number; slug: string; text: string }[];
   showTagCloud?: boolean;
   showTimeline?: boolean;
 }
@@ -14,6 +16,7 @@ const {
   variant = "default",
   posts = [],
   tags = [],
+  headings = [],
   showTagCloud = false,
   showTimeline = false,
 } = Astro.props;
@@ -25,7 +28,15 @@ const cloudTags = tags.slice(0, 18);
 ---
 
 <aside class:list={["sidebar", variant === "article" && "article-sidebar"]}>
-  {recentPosts.length > 0 && (
+  {variant === "article" && headings.length > 0 ? (
+    <section class="widget" aria-label="文章目录">
+      <div class="widget-header">
+        <span class="widget-header-dot"></span>
+        文章目录
+      </div>
+      <Toc headings={headings} />
+    </section>
+  ) : recentPosts.length > 0 && (
     <section class="widget" aria-label="最新文章">
       <div class="widget-header">
         <span class="widget-header-dot"></span>

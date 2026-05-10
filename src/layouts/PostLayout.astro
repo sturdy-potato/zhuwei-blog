@@ -7,14 +7,16 @@ import { formatDate, getPostSlug, getPublishedPosts, slugifyTag } from "../lib/b
 
 interface Props {
   post: CollectionEntry<"blog">;
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
-const { post } = Astro.props;
+const { post, headings = [] } = Astro.props;
 const posts = await getPublishedPosts();
 const currentIndex = posts.findIndex((item) => item.id === post.id);
 const prevPost = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
 const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
 const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
+const relatedPosts = posts.filter((item) => item.id !== post.id).slice(0, 4);
 ---
 
 <BaseLayout
@@ -44,18 +46,30 @@ const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 {post.data.minutes} 分钟
               </span>
+              <div class="detail-tags detail-tags--meta">
+                {post.data.tags.map((tag) => (
+                  <a class="tag-pill" href={`/tags/${slugifyTag(tag)}/`}>#{tag}</a>
+                ))}
+              </div>
             </div>
             <h1 class="article-title">{post.data.title}</h1>
             <p class="article-summary">{post.data.excerpt}</p>
-            <div class="detail-tags">
-              {post.data.tags.map((tag) => (
-                <a class="tag-pill" href={`/tags/${slugifyTag(tag)}/`}>#{tag}</a>
-              ))}
-            </div>
           </header>
           <div class="article-content">
             <slot />
           </div>
+          {relatedPosts.length > 0 && (
+            <section class="article-related" aria-label="你可能还感兴趣">
+              <h2 class="article-related-title">你可能还感兴趣</h2>
+              <ul class="article-related-list">
+                {relatedPosts.map((item) => (
+                  <li class="article-related-item">
+                    <a href={`/blog/${getPostSlug(item)}/`}>{item.data.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <PostEngagement
             slug={getPostSlug(post)}
             initialViews={post.data.views}
@@ -64,7 +78,9 @@ const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
           />
         </article>
       </div>
-      <Sidebar posts={posts} tags={allTags} showTagCloud={true} showTimeline={true} variant="article" />
+      <Sidebar posts={posts} tags={allTags} headings={headings} showTagCloud={true} showTimeline={true} variant="article" />
     </div>
   </main>
+  <script type="module" src="/scripts/copy-code.js"></script>
+  <script type="module" src="/scripts/toc-active.js"></script>
 </BaseLayout>

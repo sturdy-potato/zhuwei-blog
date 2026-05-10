@@ -285,8 +285,19 @@ body {
 .back-top:hover { background: var(--primary); color: #0a0a0a; border-color: var(--primary); }
 
 /* Hide unused elements from old design */
-body::before, .menu-toggle, .header-right, .reading-progress,
+body::before, .menu-toggle, .header-right,
 .page-shell, .page-shell-article { display: contents; }
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--primary);
+  z-index: 999;
+  transition: width .1s linear;
+}
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 900px) {
