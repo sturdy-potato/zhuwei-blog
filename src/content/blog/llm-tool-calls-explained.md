@@ -47,7 +47,7 @@ draft: false
 
 **不是。**
 
-大模型本身是一个文本模型，它**只会输出文字**。
+在 Tool Calls 这条链路里，大模型不会替你执行外部系统里的真实动作。它返回的是一段**调用意图**：要调用哪个工具、参数是什么、这次调用的 ID 是什么。
 
 Tool Calls 的真实含义是：
 
@@ -482,18 +482,18 @@ Tool Calls 本质上不是”让大模型变得更强”，而是：
 
 关键要记住的几点：
 
-1. 模型**不执行代码**，它只输出”我建议调这个工具、带这些参数”。
+1. 模型**不替你执行外部动作**，它返回的是”我建议调这个工具、带这些参数”的结构化调用意图。
 2. 真正的执行 / 安全 / 鉴权 / 审计，全都在**你的后端**这边。
 3. Schema 写得越克制、描述越精确，工具命中率越高。
 4. 工程上必须支持**多轮 \+ 并行**，但要给循环加上限。
 5. 敏感信息不要进 arguments，它会一直躺在上下文里。
 
-把这五点想清楚，再去看 OpenAI / Anthropic / Gemini 的文档，就是在对同一个模型**换着马甲读三遍**，不会再乱。
+把这五点想清楚，再去看 OpenAI / Anthropic / Gemini 的文档，就能把不同字段名背后的同一套工程链路对上。
 
 ---
 
 ## 参考资料
 
-* OpenAI Function Calling 官方文档
-* Anthropic Tool Use 官方文档
-* Google Gemini Function Calling 官方文档
+* [OpenAI Function Calling 官方文档](https://platform.openai.com/docs/guides/function-calling)
+* [Anthropic Tool Use 官方文档](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/implement-tool-use)
+* [Google Gemini Function Calling 官方文档](https://ai.google.dev/gemini-api/docs/function-calling)

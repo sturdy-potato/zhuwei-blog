@@ -17,9 +17,6 @@ views: 0
 comments: 0
 draft: false
 ---
-
-# OpenClaw Gateway 架构：一个本地控制平面如何接管多渠道
-
 上一篇文章里，我们把 OpenClaw 定位成一个本地优先的多渠道 Agent Gateway，而不是普通 Bot。
 
 这一篇继续往下拆：**Gateway 到底是什么？它为什么能成为整个 OpenClaw 的控制平面？**
@@ -36,6 +33,12 @@ OpenClaw 官方文档里明确写到：Gateway 是一个长期运行的 WebSocke
 普通 Bot 的核心是消息处理函数。
 OpenClaw 的核心是 Gateway 控制平面。
 ```
+
+---
+
+## 系列位置
+
+这篇是 OpenClaw 系列的第二篇，重点拆 Gateway。建议先读 [整体架构](/blog/openclaw-architecture-not-just-a-bot/)，再读下一篇 [Agent Loop](/blog/openclaw-agent-loop-explained/)，这样不会反复把 Gateway、Session、Queue 当成孤立概念看。
 
 ---
 
@@ -989,6 +992,6 @@ Gateway 是 OpenClaw 的控制平面。
 
 只有这样，AI 应用才不会停留在“聊天机器人”阶段，而是逐步演进成真正可维护、可扩展、可运行的 Agent 平台。
 
-[1]: https://github.com/openclaw/openclaw
-[2]: https://github.com/openclaw/openclaw/blob/main/docs/gateway/protocol.md
-[3]: https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md
+[1]: https://docs.openclaw.ai/cli/gateway
+[2]: https://docs.openclaw.ai/gateway/protocol
+[3]: https://docs.openclaw.ai/cli/gateway

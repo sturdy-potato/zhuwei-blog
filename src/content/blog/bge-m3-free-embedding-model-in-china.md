@@ -211,6 +211,7 @@ embedding 负责“找相关内容”，不负责“生成最终答案”。
 
 ## 参考资料
 
-- BAAI 官方模型页：BGE-M3（Hugging Face）
-- FlagEmbedding 官方仓库（GitHub）
-- ModelScope 官方镜像页
+- [BAAI/bge-m3 官方模型页（Hugging Face）](https://huggingface.co/BAAI/bge-m3)
+- [FlagEmbedding 官方仓库（GitHub）](https://github.com/FlagOpen/FlagEmbedding)
+- [BGE-M3 技术报告（arXiv）](https://arxiv.org/abs/2402.03216)
+- [BAAI/bge-m3（ModelScope 镜像页）](https://modelscope.cn/models/BAAI/bge-m3)

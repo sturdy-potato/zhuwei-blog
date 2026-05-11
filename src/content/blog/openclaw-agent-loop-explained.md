@@ -17,9 +17,6 @@ views: 0
 comments: 0
 draft: false
 ---
-
-# OpenClaw Agent Loop 原理拆解：一次消息如何变成模型调用和工具调用
-
 前两篇文章分别拆了 OpenClaw 的整体架构和 Gateway。
 
 这篇继续往核心里走：**OpenClaw 收到一条消息之后，到底是怎么变成模型调用和工具调用的？**
@@ -68,9 +65,17 @@ OpenClaw 的 Agent Loop 更接近这样：
 
 ---
 
+## 系列位置
+
+这是 OpenClaw 系列的第三篇，重点放在一条消息进入系统后的完整执行链路。建议先读 [整体架构](/blog/openclaw-architecture-not-just-a-bot/) 和 [Gateway 架构](/blog/openclaw-gateway-control-plane/)，再看这篇会更顺。
+
+---
+
 ## 一、什么是 Agent Loop？
 
 Agent Loop 可以理解成 Agent 的一次完整运行。
+
+OpenClaw 官方文档把它描述成从 intake、context assembly、model inference、tool execution、streaming replies 到 persistence 的完整 agentic run，而且同一个 session 内会序列化执行。([OpenClaw][1])
 
 不是用户发一句、模型回一句这么简单，而是一次从输入到输出的完整闭环：
 
@@ -1171,3 +1176,11 @@ OpenClaw Agent Loop 更像：
 
 这也是 OpenClaw 最值得学习的核心之一。
 
+---
+
+## 参考资料
+
+- [OpenClaw Agent Loop](https://docs.openclaw.ai/concepts/agent-loop)
+- [OpenClaw Gateway protocol](https://docs.openclaw.ai/gateway/protocol)
+
+[1]: https://docs.openclaw.ai/concepts/agent-loop

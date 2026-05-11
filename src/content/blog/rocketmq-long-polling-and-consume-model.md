@@ -81,7 +81,7 @@ gRPC 是一种高性能 RPC 通信框架。
 - 通常基于 Protobuf 编码
 - 底层跑在 HTTP/2 上
 
-RocketMQ 5.x 的 Go SDK，底层通信就不是传统的 HTTP JSON 风格，而是这套 gRPC 协议链路。
+RocketMQ 5.x 的 Go SDK，官方文档也明确把它归到 **gRPC protocol Go SDK** 这条链路里，所以它不是传统的 HTTP JSON 风格。([RocketMQ][1])
 
 ## 怎么安装
 
@@ -224,7 +224,7 @@ Broker：有。
 
 ```text
 消费者：有消息吗？我先等着。
-Broker：现在没有，你这个请求先别挂。
+Broker：现在没有，你这个请求先挂住等一会儿。
 ……
 生产者发来一条消息
 Broker：有了，返回给你。
@@ -392,3 +392,12 @@ RocketMQ 这种消费模型，特别适合下面这些场景：
 现在可以统一成一个理解：
 
 **它是运行在 HTTP/2 长连接之上的 gRPC 长轮询消费模型。**
+
+---
+
+## 参考资料
+
+- [Apache RocketMQ Go Client SDK](https://rocketmq.apache.org/docs/sdk/05go/)
+- [Apache RocketMQ SDK Overview](https://rocketmq.apache.org/docs/sdk/01overview/)
+
+[1]: https://rocketmq.apache.org/docs/sdk/05go/

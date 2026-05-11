@@ -210,4 +210,9 @@ CronService 接收任务后会：
 
 ---
 
+## 参考资料
+
+- [OpenClaw Scheduled tasks](https://docs.openclaw.ai/automation/cron-jobs)
+- [OpenClaw Cron CLI](https://docs.openclaw.ai/cli/cron)
+- [OpenClaw Agent Loop](https://docs.openclaw.ai/concepts/agent-loop)
 

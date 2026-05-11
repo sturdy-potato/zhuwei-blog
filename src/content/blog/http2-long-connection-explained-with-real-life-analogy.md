@@ -373,3 +373,10 @@ HTTP/2 更像是一台大型智能电梯。
 **HTTP/1.x 更像单车道小路，车容易排队；HTTP/2 更像长期存在的多车道高速公路，很多任务可以同时通过。**
 
 理解到这里，"长连接""多路复用""多个流并发"这几个词，基本就不会再绕了。
+
+---
+
+## 参考资料
+
+- [RFC 9113：HTTP/2](https://www.rfc-editor.org/rfc/rfc9113)
+- [gRPC Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)

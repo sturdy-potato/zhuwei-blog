@@ -458,3 +458,12 @@ TCP = 可靠公路系统
 把这四个概念压缩成一句最实用的话：
 
 **TCP 负责把路修稳，HTTP 负责规定交流格式，HTTP/2 负责把这条路升级成高效多车道，gRPC 则是在这套基础上，进一步把跨机器通信包装成标准化的远程方法调用。**
+
+---
+
+## 参考资料
+
+- [RFC 9293：Transmission Control Protocol (TCP)](https://www.rfc-editor.org/rfc/rfc9293)
+- [RFC 9110：HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9113：HTTP/2](https://www.rfc-editor.org/rfc/rfc9113)
+- [gRPC Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)

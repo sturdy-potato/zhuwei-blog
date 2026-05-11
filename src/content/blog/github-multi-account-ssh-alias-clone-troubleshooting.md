@@ -117,7 +117,7 @@ cat ~/.ssh/config
 
 当时配置大致如下（敏感信息已脱敏）：
 
-```sshconfig
+```text
 Host gitlab.example.com
   HostName gitlab.example.com
   Port 58422
@@ -174,7 +174,7 @@ nano ~/.ssh/config
 
 保留公司 GitLab 配置：
 
-```sshconfig
+```text
 Host gitlab.example.com
   HostName gitlab.example.com
   Port 58422
@@ -184,7 +184,7 @@ Host gitlab.example.com
 
 新增一个明确的 GitHub 账号别名：
 
-```sshconfig
+```text
 Host github-sturdy
   HostName ssh.github.com
   Port 443
@@ -195,7 +195,7 @@ Host github-sturdy
 
 最终配置类似：
 
-```sshconfig
+```text
 Host gitlab.example.com
   HostName gitlab.example.com
   Port 58422
@@ -291,7 +291,7 @@ port 22
 
 而前面配置的新别名是：
 
-```sshconfig
+```text
 Host github-sturdy
   HostName ssh.github.com
   Port 443
@@ -353,7 +353,7 @@ origin  git@github-sturdy:sturdy-potato/zhuwei-blog.git (push)
 
 推荐全部使用账号别名。例如：
 
-```sshconfig
+```text
 Host github-sturdy
   HostName ssh.github.com
   Port 443
@@ -416,3 +416,10 @@ ssh -vT github-sturdy 2>&1 | grep -E "Offering public key|Authenticated|Hi "
 ```
 
 它能直接告诉你：当前 SSH 到底用了哪个 key、连到了哪里、认证成了哪个 GitHub 账号。
+
+---
+
+## 参考资料
+
+- [GitHub Docs：Managing multiple accounts](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-personal-account/managing-multiple-accounts?platform=mac)
+- [GitHub Docs：Using SSH over the HTTPS port](https://docs.github.com/en/authentication/troubleshooting-ssh/using-ssh-over-the-https-port)
