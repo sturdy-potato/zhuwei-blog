@@ -13,13 +13,43 @@ const { post, forcePinned = true, variant = "default", coverImage } = Astro.prop
 const { data } = post;
 const slug = getPostSlug(post);
 const isOpenClaw = slug.includes("openclaw") || (data.tags ?? []).includes("OpenClaw");
+const hasCoverImage = Boolean(coverImage) || isOpenClaw;
 // 中文注释：支持外部传入专题封面图，优先级高于默认分类封面。
 const pinnedImageStyle = coverImage ? `background-image: url("${coverImage}"), linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);` : undefined;
+
+function getTitleBadgeChar(title: string) {
+  const trimmed = title.trim();
+  const firstVisibleChar = trimmed.match(/[^\s]/u)?.[0] ?? "";
+
+  // 中文注释：无封面图时用标题首字生成兜底视觉，避免置顶区域变成空白色块。
+  if (/[\p{Script=Han}]/u.test(firstVisibleChar)) {
+    return trimmed.match(/[\p{Script=Han}]/u)?.[0] ?? "文";
+  }
+  if (/[A-Za-z]/.test(firstVisibleChar)) {
+    return firstVisibleChar.toUpperCase();
+  }
+
+  const fallbackHan = trimmed.match(/[\p{Script=Han}]/u)?.[0];
+  if (fallbackHan) return fallbackHan;
+  const fallbackLatin = trimmed.match(/[A-Za-z]/)?.[0];
+  if (fallbackLatin) return fallbackLatin.toUpperCase();
+  return "•";
+}
 ---
 
 <a class="hp-pinned-card" href={`/blog/${slug}/`}>
-  <div class:list={["hp-pinned-img", !coverImage && isOpenClaw && "is-openclaw"]} style={pinnedImageStyle}>
-    <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+  <div class:list={["hp-pinned-img", !coverImage && isOpenClaw && "is-openclaw", !hasCoverImage && "is-fallback"]} style={pinnedImageStyle}>
+    {hasCoverImage ? (
+      <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+    ) : (
+      <div class="hp-pinned-cover-fallback">
+        <div class="hp-pinned-cover-mark">{getTitleBadgeChar(data.title)}</div>
+        <div class="hp-pinned-cover-meta">
+          <span>FEATURED ARTICLE</span>
+          <strong>{data.category}</strong>
+        </div>
+      </div>
+    )}
     <div class="hp-pinned-badge">PINNED</div>
   </div>
   <div class="hp-pinned-body">

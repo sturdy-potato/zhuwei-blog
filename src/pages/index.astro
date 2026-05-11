@@ -116,9 +116,20 @@ const tabItems = [
               class:list={[
                 "hp-pinned-img",
                 (getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) && "is-openclaw",
+                !(getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) && "is-fallback",
               ]}
             >
-              <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+              {(getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) ? (
+                <div class="hp-pinned-img-icon">&lt;/&gt;</div>
+              ) : (
+                <div class="hp-pinned-cover-fallback">
+                  <div class="hp-pinned-cover-mark">{getTitleBadgeChar(pinned.data.title)}</div>
+                  <div class="hp-pinned-cover-meta">
+                    <span>FEATURED ARTICLE</span>
+                    <strong>{pinned.data.category}</strong>
+                  </div>
+                </div>
+              )}
               <div class="hp-pinned-badge">PINNED</div>
             </div>
             <div class="hp-pinned-body">
