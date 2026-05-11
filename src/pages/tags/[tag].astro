@@ -6,7 +6,8 @@ import { getPublishedPosts, slugifyTag } from "../../lib/blog";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  // 中文注释：首页分类入口复用标签页路由，所以静态路径需要同时覆盖 tags 和 category。
+  const tags = [...new Set(posts.flatMap((post) => [...post.data.tags, post.data.category]))];
 
   return tags.map((tag) => ({
     params: { tag: slugifyTag(tag) },
@@ -17,7 +18,11 @@ export async function getStaticPaths() {
 const { tag } = Astro.props;
 const { tag: tagSlug } = Astro.params;
 const posts = await getPublishedPosts();
-const filteredPosts = posts.filter((post) => post.data.tags.some((item) => slugifyTag(item) === tagSlug));
+// 中文注释：标签页兼容分类筛选，避免首页分类入口进入后无法匹配文章。
+const filteredPosts = posts.filter((post) => {
+  const normalizedTags = post.data.tags.map((item) => slugifyTag(item));
+  return normalizedTags.includes(tagSlug) || slugifyTag(post.data.category) === tagSlug;
+});
 const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filteredPosts[0];
 // 中文注释：Hermes Agent 标签页使用专属 PINNED 头图。
 const isHermesAgentTag = tagSlug === "hermes-agent";
