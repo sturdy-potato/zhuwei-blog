@@ -2,7 +2,7 @@
 title: "开源 Embedding 模型怎么选：我为什么先看 BAAI 的 BGE-M3"
 excerpt: "如果你在找可长期使用的开源 embedding 模型，BGE-M3 是一个值得优先评估的起点：可商用、可自部署、中文友好，并能覆盖多语言与长文本检索场景。"
 pubDate: 2026-04-24
-category: "AI / Embedding"
+category: "AI工程"
 section: "技术专栏"
 tags:
   - AI

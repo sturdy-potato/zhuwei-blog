@@ -2,7 +2,7 @@
 title: "大模型 Tool Calls 到底在干什么：从一次请求讲清楚函数调用"
 excerpt: "Tool Calls（函数调用）不是「让模型执行代码」，而是「让模型按约定输出一段结构化 JSON，然后由你的后端去执行」。本文把一次完整链路拆开，从 schema、请求、回调到并行调用，逐步讲清楚。"
 pubDate: 2026-04-24
-category: "AI / Function Calling"
+category: "AI工程"
 section: "技术专栏"
 tags:
   - AI

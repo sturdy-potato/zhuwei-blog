@@ -2,7 +2,7 @@
 title: "OpenClaw 还没玩明白，Hermes Agent 又来了：别急，先看清它到底适合谁"
 excerpt: "OpenClaw 和 Hermes Agent 不是简单的谁替代谁，而是两种不同路线的 Agent 工具。前者是「万能遥控器」，重点是连接消息平台与外部工具；后者是「长期运行的数字助手」，重点是记忆、技能沉淀与持续执行。本文把两者的差异、适合的场景、迁移路径和安全边界一次说清楚。"
 pubDate: 2026-04-24
-category: "AI / 自动化"
+category: "AI工程"
 section: "技术专栏"
 tags:
   - OpenClaw

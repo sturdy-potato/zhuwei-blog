@@ -2,7 +2,7 @@
 title: "GitHub CLI 克隆仓库失败：从 gh auth login 到 SSH 443 端口修复"
 excerpt: "记录一次使用 gh repo clone 克隆 GitHub 仓库时，从未登录、SSH 22 端口被断开，到最终通过 SSH 443 端口修复的完整过程。"
 pubDate: 2026-04-24
-category: "技术"
+category: "工程实践"
 section: "技术专栏"
 tags:
   - GitHub
