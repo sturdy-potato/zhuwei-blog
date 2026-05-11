@@ -62,6 +62,11 @@ const {
         document.documentElement.dataset.theme = theme;
       })();
     </script>
+    <!-- 中文注释：配置站点 favicon，保证浏览器标签页和收藏夹能显示品牌图标。 -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#111318" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <SeoHead title={title} description={description} canonical={canonical} type={type} />
