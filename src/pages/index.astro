@@ -41,7 +41,38 @@ const tabItems = [
   { href: "/", label: "全部", icon: "●" },
   { href: "/tags/ai工程/", label: "AI工程", icon: "◈" },
   { href: "/tags/后端工程/", label: "后端工程", icon: "⬡" },
-  { href: "/tags/工程实践/", label: "工程实践", icon: "▦" }
+  { href: "/tags/工程实践/", label: "工程实践", icon: "▦" },
+  { href: "/tags/建站笔记/", label: "建站笔记", icon: "◇" },
+  { href: "/tags/数码折腾/", label: "数码折腾", icon: "◉" }
+];
+
+const siteUrl = new URL("/", Astro.site).toString();
+// 中文注释：首页结构化数据声明站点和博客实体，辅助搜索结果理解站点主题。
+const homeJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "ZHUWEI.BLOG",
+    url: siteUrl,
+    description: "一个专注于后端工程、网络协议与 AI 自动化的个人博客，用 PHP / Go / Python 记录真实项目中的问题与方案。",
+    inLanguage: "zh-CN",
+    publisher: {
+      "@type": "Person",
+      name: "ZhuWei"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "ZHUWEI.BLOG",
+    url: siteUrl,
+    blogPost: posts.slice(0, 10).map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.data.title,
+      url: new URL(`/blog/${getPostSlug(post)}/`, Astro.site).toString(),
+      datePublished: post.data.pubDate.toISOString()
+    }))
+  }
 ];
 ---
 
@@ -49,6 +80,8 @@ const tabItems = [
   title="技术笔记与思考"
   description="一个专注于后端工程、网络协议与 AI 自动化的个人博客，用 PHP / Go / Python 记录真实项目中的问题与方案。"
   activePath="/"
+  canonical="/"
+  jsonLd={homeJsonLd}
   searchPlaceholder="搜索更多文章..."
 >
   <div class="hp-root">

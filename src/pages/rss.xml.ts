@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: "ZHUWEI.BLOG",
-    description: "专注于前端工程化、系统架构设计与开源生态的技术博客。",
+    description: "专注于后端工程、网络协议、AI 自动化与数码折腾的个人技术博客。",
     site: context.site ?? "https://zhuwei.fun",
     items: posts.map((post) => ({
       title: post.data.title,

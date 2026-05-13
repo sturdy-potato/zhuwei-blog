@@ -12,6 +12,7 @@ interface Props {
   activePath?: string;
   canonical?: string;
   type?: "website" | "article";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   pageVariant?: "default" | "article" | "archive";
   // 中文注释：用于首页等页面自定义顶部搜索框提示文案
   searchPlaceholder?: string;
@@ -23,6 +24,7 @@ const {
   activePath,
   canonical,
   type = "website",
+  jsonLd,
   pageVariant = "default",
   searchPlaceholder
 } = Astro.props;
@@ -67,9 +69,10 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#111318" />
+    <link rel="alternate" type="application/rss+xml" title="ZHUWEI.BLOG RSS" href={new URL("/rss.xml", Astro.site).toString()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <SeoHead title={title} description={description} canonical={canonical} type={type} />
+    <SeoHead title={title} description={description} canonical={canonical} type={type} jsonLd={jsonLd} />
   </head>
   <body>
     <Header activePath={activePath} variant={pageVariant} searchPlaceholder={searchPlaceholder} />

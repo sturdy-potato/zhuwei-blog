@@ -1,0 +1,7 @@
+# 中文注释：统一搜索引擎入口，避免 www 和裸域形成重复收录。
+https://www.zhuwei.fun/* https://zhuwei.fun/:splat 301
+
+# 中文注释：旧站遗留页面已不属于当前博客内容，重定向到归档页承接搜索流量。
+/question /blog/ 301
+/question/* /blog/ 301
+/tools/* /blog/ 301

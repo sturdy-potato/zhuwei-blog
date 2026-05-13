@@ -17,6 +17,40 @@ const prevPost = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
 const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
 const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
 const relatedPosts = posts.filter((item) => item.id !== post.id).slice(0, 4);
+const postUrl = new URL(`/blog/${getPostSlug(post)}/`, Astro.site).toString();
+const imageUrl = new URL("/og-default.svg", Astro.site).toString();
+const wordCount = (post.body ?? "").split(/\s+/u).filter(Boolean).length;
+// 中文注释：文章结构化数据帮助搜索引擎识别标题、作者、发布时间和标签。
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.excerpt,
+  image: imageUrl,
+  url: postUrl,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": postUrl
+  },
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  author: {
+    "@type": "Person",
+    name: "ZhuWei",
+    url: new URL("/about/", Astro.site).toString()
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "ZHUWEI.BLOG",
+    logo: {
+      "@type": "ImageObject",
+      url: new URL("/favicon.svg", Astro.site).toString()
+    }
+  },
+  articleSection: post.data.category,
+  keywords: post.data.tags.join(", "),
+  wordCount
+};
 ---
 
 <BaseLayout
@@ -25,6 +59,7 @@ const relatedPosts = posts.filter((item) => item.id !== post.id).slice(0, 4);
   activePath="/blog/"
   canonical={`/blog/${getPostSlug(post)}/`}
   type="article"
+  jsonLd={articleJsonLd}
   pageVariant="article"
 >
   <main class="article-page-main">
