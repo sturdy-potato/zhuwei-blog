@@ -2,8 +2,8 @@
 title: "为什么 PostgreSQL 的 sequence 会和 MySQL AUTO_INCREMENT 表现不一样？"
 excerpt: "PostgreSQL 的 sequence 是独立发号器，MySQL 的 AUTO_INCREMENT 更像表自己的计数器。这个差异会直接影响手工插入 id、数据迁移和主键冲突排查。"
 pubDate: "2026-05-11"
-category: "PostgreSQL"
-section: "技术专栏"
+category: "数据库"
+section: "后端工程"
 tags: ["PostgreSQL", "MySQL", "sequence", "AUTO_INCREMENT", "数据库原理"]
 color: "green"
 icon: "Database"

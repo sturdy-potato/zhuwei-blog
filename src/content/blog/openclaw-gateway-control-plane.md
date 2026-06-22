@@ -2,8 +2,8 @@
 title: "OpenClaw Gateway 架构：一个本地控制平面如何接管多渠道"
 excerpt: "OpenClaw 的 Gateway 不是普通消息转发服务，而是整个 Agent 系统的本地控制平面。本文拆解它如何统一接管多渠道、客户端、节点、会话、事件和自动化入口。"
 pubDate: 2026-04-29
-category: "AI工程"
-section: "技术专栏"
+category: "OpenClaw"
+section: "AI工程"
 tags:
   - OpenClaw
   - Gateway

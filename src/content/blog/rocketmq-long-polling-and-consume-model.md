@@ -2,8 +2,8 @@
 title: "RocketMQ 消费到底是不是监听：长轮询、gRPC 和延时消息原理讲清楚"
 excerpt: "很多人以为 RocketMQ 消费是定时扫队列，或者是 Broker 直接推送。本文从 Go SDK 视角讲清楚：消费者到底是怎么拿到消息的，长轮询到底是什么，延时消息为什么到了时间就能很快被消费。"
 pubDate: 2026-04-24
-category: "后端工程"
-section: "技术专栏"
+category: "消息队列"
+section: "后端工程"
 tags:
   - RocketMQ
   - 长轮询

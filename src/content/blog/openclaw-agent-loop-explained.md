@@ -2,8 +2,8 @@
 title: "OpenClaw Agent Loop 原理拆解：一次消息如何变成模型调用和工具调用"
 excerpt: "OpenClaw 的 Agent Loop 不是简单调用一次大模型，而是一条完整的任务执行链路。本文拆解一条消息如何经过会话解析、队列控制、上下文组装、模型推理、工具调用、流式回复和持久化，最终变成一次可控的 Agent 执行。"
 pubDate: 2026-04-29
-category: "AI工程"
-section: "技术专栏"
+category: "OpenClaw"
+section: "AI工程"
 tags:
   - OpenClaw
   - Agent Loop

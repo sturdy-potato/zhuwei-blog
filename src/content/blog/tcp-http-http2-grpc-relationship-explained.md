@@ -2,8 +2,8 @@
 title: "TCP、HTTP、HTTP/2、gRPC 到底是什么关系"
 excerpt: "很多人会背 TCP、HTTP、HTTP/2、gRPC 这些名词，但一到实际场景就容易混。本文不堆术语，用寄快递和高速公路的类比，把这四层关系彻底讲明白。"
 pubDate: 2026-04-24
-category: "后端工程"
-section: "技术专栏"
+category: "网络协议"
+section: "后端工程"
 tags:
   - TCP
   - HTTP

@@ -2,8 +2,8 @@
 title: "GitHub 多账号 SSH 配置踩坑：为什么复制的 SSH 地址 clone 不下来？"
 excerpt: "记录一次 GitHub 多账号与 SSH 配置下的 clone 失败排查：如何确认实际使用的 key、为什么默认 SSH 地址不一定可用，以及如何用 Host 别名稳定解决。"
 pubDate: 2026-04-28
-category: "工程实践"
-section: "技术专栏"
+category: "Git与GitHub"
+section: "工程实践"
 tags:
   - GitHub
   - Git

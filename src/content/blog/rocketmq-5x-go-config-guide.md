@@ -2,8 +2,8 @@
 title: "阿里云 RocketMQ 5.x Go SDK 配置到底该怎么填"
 excerpt: "结合一次真实接入过程，讲清楚 RocketMQ 5.x Go SDK 里哪些是官方配置项，哪些是项目自定义字段，以及 Topic、Group、NameSpace、Endpoint 这些字段到底分别该怎么理解。"
 pubDate: 2026-04-24
-category: "后端工程"
-section: "技术专栏"
+category: "消息队列"
+section: "后端工程"
 tags:
   - RocketMQ
   - 阿里云

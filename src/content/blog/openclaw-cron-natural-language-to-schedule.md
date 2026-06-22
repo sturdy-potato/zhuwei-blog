@@ -2,8 +2,8 @@
 title: "你只说一句话，AI 为什么能每天早上 6 点准时干活：OpenClaw 定时任务原理拆解"
 excerpt: "一句「每天早上 6 点发送新闻简报」，为什么就能变成一个稳定运行的定时任务？本文从自然语言理解、工具调用协议，到持久化调度和投递闭环，把 OpenClaw 的 cron 机制完整讲清楚。"
 pubDate: 2026-04-24
-category: "AI工程"
-section: "技术专栏"
+category: "OpenClaw"
+section: "AI工程"
 tags:
   - OpenClaw
   - AI

@@ -2,8 +2,8 @@
 title: "小米 13 安装 GCam / AGC 相机简单记录"
 excerpt: "记录小米 13 安装 AGC8.8、下载配置文件、放置配置目录和导入配置的完整流程。"
 pubDate: 2026-05-13
-category: "数码折腾"
-section: "技术专栏"
+category: "Android影像"
+section: "数码生活"
 tags:
   - Android
   - 小米13

@@ -2,8 +2,8 @@
 title: "OpenClaw 整体架构：为什么它不是普通 Bot"
 excerpt: "OpenClaw 表面上像一个聊天机器人，底层却更接近一个本地优先的多渠道 Agent Gateway。本文从架构角度拆解它和普通 Bot 的根本区别。"
 pubDate: 2026-04-29
-category: "AI工程"
-section: "技术专栏"
+category: "OpenClaw"
+section: "AI工程"
 tags:
   - OpenClaw
   - Agent

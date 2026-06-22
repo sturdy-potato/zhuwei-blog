@@ -7,8 +7,8 @@ import "../../styles/home.css";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  // 中文注释：同一路由同时承载标签和分类，保证首页分类侧栏可以直接复用现有静态页。
-  const tags = [...new Set(posts.flatMap((post) => [...post.data.tags, post.data.category]))];
+  // 中文注释：同一路由承载一级分类、二级分类和普通标签，保证旧标签入口与新侧栏链接都可访问。
+  const tags = [...new Set(posts.flatMap((post) => [...post.data.tags, post.data.section, post.data.category]))];
   return tags.map((tag) => ({ params: { tag: slugifyTag(tag) }, props: { tag } }));
 }
 
@@ -16,9 +16,14 @@ const { tag } = Astro.props;
 const { tag: tagSlug = "" } = Astro.params;
 const posts = await getPublishedPosts();
 const categories = getCategoryStats(posts);
+const matchesSection = posts.some((post) => slugifyTag(post.data.section) === tagSlug);
+const matchesCategory = posts.some((post) => slugifyTag(post.data.category) === tagSlug);
 const filteredPosts = posts.filter((post) => {
+  // 中文注释：分类名称与普通标签同名时优先按分类筛选，保证侧栏显示数量与落地页文章数量一致。
+  if (matchesSection) return slugifyTag(post.data.section) === tagSlug;
+  if (matchesCategory) return slugifyTag(post.data.category) === tagSlug;
   const normalizedTags = post.data.tags.map((item) => slugifyTag(item));
-  return normalizedTags.includes(tagSlug) || slugifyTag(post.data.category) === tagSlug;
+  return normalizedTags.includes(tagSlug);
 });
 const activeCategory = categories.find((category) => category.slug === tagSlug)?.name ?? tag;
 ---

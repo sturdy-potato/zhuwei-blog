@@ -2,14 +2,15 @@
 title: "博客 SEO 优化简单记录：让搜索引擎更容易看懂你的网站"
 excerpt: "面向新手整理一套博客 SEO 基础优化流程，包括标题描述、canonical、sitemap、robots、旧链接重定向和结构化数据。"
 pubDate: 2026-05-13
-category: "建站笔记"
-section: "技术专栏"
+category: "博客建设"
+section: "工程实践"
 tags:
   - SEO
   - 博客
   - 建站
   - 搜索引擎
   - Astro
+  - 建站笔记
 color: "green"
 icon: "Search"
 minutes: 5

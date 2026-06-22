@@ -52,19 +52,12 @@ export function groupPostsBySection<T extends { data: { section: string } }>(pos
   }, {});
 }
 
-// 中文注释：统一聚合分类名称、数量和代表色，供首页、归档页、标签页共用。
-export function getCategoryStats<T extends { data: { category: string; color?: ColorName; tags: string[] } }>(posts: T[]): CategoryStat[] {
+// 中文注释：section 作为一级分类、category 作为二级分类；tags 只服务文章标签页，不再塞进分类侧栏。
+export function getCategoryStats<T extends { data: { section: string; category: string; color?: ColorName } }>(posts: T[]): CategoryStat[] {
   const categories = new Map<string, CategoryStat>();
-  const tagCounts = new Map<string, number>();
-
-  // 中文注释：子目录链接进入全局标签页，因此数量也使用全站标签文章数，保证点击前后显示一致。
-  for (const post of posts) {
-    const uniqueTagSlugs = new Set(post.data.tags.map((tag) => slugifyTag(tag)).filter(Boolean));
-    for (const tagSlug of uniqueTagSlugs) tagCounts.set(tagSlug, (tagCounts.get(tagSlug) ?? 0) + 1);
-  }
 
   for (const post of posts) {
-    const name = post.data.category.trim();
+    const name = post.data.section.trim();
     let category = categories.get(name);
     if (!category) {
       category = {
@@ -78,14 +71,12 @@ export function getCategoryStats<T extends { data: { category: string; color?: C
     }
     category.count += 1;
 
-    // 中文注释：标签作为分类下的子目录；同一分类内只生成一个同名入口。
-    const uniqueTags = new Set(post.data.tags.map((tag) => tag.trim()).filter(Boolean));
-    for (const tag of uniqueTags) {
-      const tagSlug = slugifyTag(tag);
-      if (tagSlug === category.slug) continue;
-      const child = category.children.find((item) => item.slug === tagSlug);
-      if (!child) category.children.push({ name: tag, slug: tagSlug, count: tagCounts.get(tagSlug) ?? 1 });
-    }
+    // 中文注释：同一一级分类下按二级分类累计文章数，避免标签过多导致子目录失控。
+    const childName = post.data.category.trim();
+    const childSlug = slugifyTag(childName);
+    const child = category.children.find((item) => item.slug === childSlug);
+    if (child) child.count += 1;
+    else category.children.push({ name: childName, slug: childSlug, count: 1 });
   }
 
   // 中文注释：文章多的分类优先展示；数量相同时按中文名称稳定排序，避免构建后顺序漂移。
