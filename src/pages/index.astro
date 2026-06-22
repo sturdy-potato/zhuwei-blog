@@ -1,65 +1,27 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatDate, getPinnedPost, getPostSlug, getPublishedPosts } from "../lib/blog";
+import AuthorOverview from "../components/AuthorOverview.astro";
+import CategorySidebar from "../components/CategorySidebar.astro";
+import PostList from "../components/PostList.astro";
+import { getCategoryStats, getPostSlug, getPublishedPosts } from "../lib/blog";
+import "../styles/home.css";
 
 const posts = await getPublishedPosts();
-const pinned = await getPinnedPost();
+const categories = getCategoryStats(posts);
 const totalWords = posts.reduce((sum, post) => sum + (post.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
 const totalViews = posts.reduce((sum, post) => sum + post.data.views, 0);
-const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0, 5);
-
-function categoryClass(color: string | undefined) {
-  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `hp-cat-${color}`;
-  return "hp-cat-blue";
-}
-
-function iconClass(color: string | undefined) {
-  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `is-${color}`;
-  return "is-blue";
-}
-
-function getTitleBadgeChar(title: string) {
-  const trimmed = title.trim();
-  const firstVisibleChar = trimmed.match(/[^\s]/u)?.[0] ?? "";
-
-  // 中文标题显示第一个汉字；英文标题显示首字母。
-  if (/[\p{Script=Han}]/u.test(firstVisibleChar)) {
-    return trimmed.match(/[\p{Script=Han}]/u)?.[0] ?? "文";
-  }
-  if (/[A-Za-z]/.test(firstVisibleChar)) {
-    return firstVisibleChar.toUpperCase();
-  }
-
-  const fallbackHan = trimmed.match(/[\p{Script=Han}]/u)?.[0];
-  if (fallbackHan) return fallbackHan;
-  const fallbackLatin = trimmed.match(/[A-Za-z]/)?.[0];
-  if (fallbackLatin) return fallbackLatin.toUpperCase();
-  return "•";
-}
-
-const tabItems = [
-  { href: "/", label: "全部", icon: "●" },
-  { href: "/tags/ai工程/", label: "AI工程", icon: "◈" },
-  { href: "/tags/后端工程/", label: "后端工程", icon: "⬡" },
-  { href: "/tags/工程实践/", label: "工程实践", icon: "▦" },
-  { href: "/tags/建站笔记/", label: "建站笔记", icon: "◇" },
-  { href: "/tags/数码折腾/", label: "数码折腾", icon: "◉" }
-];
-
+const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views);
 const siteUrl = new URL("/", Astro.site).toString();
-// 中文注释：首页结构化数据声明站点和博客实体，辅助搜索结果理解站点主题。
+
+// 中文注释：首页结构化数据继续使用完整文章集合，UI 改造不改变搜索引擎可识别的文章关系。
 const homeJsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "ZHUWEI.BLOG",
     url: siteUrl,
-    description: "一个专注于后端工程、网络协议与 AI 自动化的个人博客，用 PHP / Go / Python 记录真实项目中的问题与方案。",
-    inLanguage: "zh-CN",
-    publisher: {
-      "@type": "Person",
-      name: "ZhuWei"
-    }
+    description: "一个专注于后端工程、网络协议与 AI 自动化的个人博客。",
+    inLanguage: "zh-CN"
   },
   {
     "@context": "https://schema.org",
@@ -82,201 +44,30 @@ const homeJsonLd = [
   activePath="/"
   canonical="/"
   jsonLd={homeJsonLd}
-  searchPlaceholder="搜索更多文章..."
+  searchPlaceholder="搜索文章、分类或标签"
 >
-  <div class="hp-root">
-    <section class="hp-hero">
-      <div class="hp-hero-inner">
-        <div class="hp-hero-left">
-          <div class="hp-hero-badge">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-            </svg>
-            代码 · 设计 · 独立思考
-          </div>
-          <h1 class="hp-hero-title">代码、设计与<span class="hp-accent">独立思考</span></h1>
-          <p class="hp-hero-desc">专注于后端工程、网络协议与 AI 自动化，<br />用 PHP / Go / Python 把每一个踩过的坑写清楚。</p>
-        </div>
+  <main class="platform-page">
+    <div class="platform-layout">
+      <CategorySidebar categories={categories} totalPosts={posts.length} hotPosts={hotPosts} />
+      <div class="platform-main">
+        <AuthorOverview
+          postCount={posts.length}
+          categoryCount={categories.length}
+          totalViews={totalViews}
+          totalWords={totalWords}
+        />
+        <section class="article-feed" aria-labelledby="latest-posts-title">
+          <header class="feed-header">
+            <div>
+              <h2 id="latest-posts-title">最新文章</h2>
+              <p>记录真实项目中的问题、判断与解决方案</p>
+            </div>
+            <span>共 {posts.length} 篇</span>
+          </header>
+          <PostList posts={posts} />
+        </section>
       </div>
-    </section>
-
-    <div class="hp-main">
-      <div class="hp-content">
-        <div class="hp-filter-tabs">
-          {tabItems.map((tab, index) => (
-            <a class:list={["hp-tab", index === 0 && "is-active"]} href={tab.href}>
-              <span class="hp-tab-icon">{tab.icon}</span>{tab.label}
-            </a>
-          ))}
-        </div>
-
-        <div class="hp-stats-bar">
-          <div class="hp-stat-item">
-            <div class="hp-stat-info">
-              <div class="hp-stat-value">{posts.length}</div>
-              <div class="hp-stat-label">文章总数</div>
-            </div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-info">
-              <div class="hp-stat-value">{totalWords.toLocaleString("zh-CN")}</div>
-              <div class="hp-stat-label">总字数</div>
-            </div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-info">
-              <div class="hp-stat-value" data-total-views>
-                {totalViews.toLocaleString("zh-CN")}
-                <span class="hp-stat-delta">↑ 5.1%</span>
-              </div>
-              <div class="hp-stat-label">总阅读量</div>
-            </div>
-          </div>
-          <div class="hp-stat-item">
-            <div class="hp-stat-info">
-              <div class="hp-stat-value">
-                <span data-live-visitors>2,486</span>
-                <span class="hp-stat-live" aria-hidden="true"></span>
-              </div>
-              <div class="hp-stat-label">今日访客</div>
-            </div>
-          </div>
-        </div>
-
-        {pinned && (
-          <a class="hp-pinned-card" href={`/blog/${getPostSlug(pinned)}/`}>
-            <div
-              class:list={[
-                "hp-pinned-img",
-                (getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) && "is-openclaw",
-                !(getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) && "is-fallback",
-              ]}
-            >
-              {(getPostSlug(pinned).includes("openclaw") || pinned.data.tags.includes("OpenClaw")) ? (
-                <div class="hp-pinned-img-icon">&lt;/&gt;</div>
-              ) : (
-                <div class="hp-pinned-cover-fallback">
-                  <div class="hp-pinned-cover-mark">{getTitleBadgeChar(pinned.data.title)}</div>
-                  <div class="hp-pinned-cover-meta">
-                    <span>FEATURED ARTICLE</span>
-                    <strong>{pinned.data.category}</strong>
-                  </div>
-                </div>
-              )}
-              <div class="hp-pinned-badge">PINNED</div>
-            </div>
-            <div class="hp-pinned-body">
-              <span class:list={["hp-cat-tag", categoryClass(pinned.data.color)]}>{pinned.data.category}</span>
-              <div class="hp-pinned-date">{formatDate(pinned.data.pubDate)}</div>
-              <h2 class="hp-pinned-title">{pinned.data.title}</h2>
-              <p class="hp-pinned-desc">{pinned.data.excerpt}</p>
-            </div>
-          </a>
-        )}
-
-        <div class="hp-section-title">最新文章</div>
-        <div class="hp-article-list">
-          {posts.map((post, index) => (
-            <a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`} data-post-slug={getPostSlug(post)}>
-              <div class:list={["hp-article-icon", iconClass(post.data.color)]}>{getTitleBadgeChar(post.data.title)}</div>
-              <div class="hp-article-info">
-                <div class="hp-article-meta">
-                  <span class:list={["hp-cat-tag", categoryClass(post.data.color)]}>{post.data.category}</span>
-                  <span class="hp-article-date">{formatDate(post.data.pubDate)}</span>
-                  {index === 0 && <span class="hp-article-new">NEW</span>}
-                </div>
-                <div class="hp-article-title">{post.data.title}</div>
-                <div class="hp-article-desc">{post.data.excerpt}</div>
-                <div class="hp-article-footer">
-                  <div class="hp-article-stat" data-post-views={getPostSlug(post)}>👁 {post.data.views.toLocaleString("zh-CN")}</div>
-                  <div class="hp-article-stat" data-post-comments={getPostSlug(post)}>💬 {post.data.comments.toLocaleString("zh-CN")}</div>
-                  <div class="hp-article-stat">⏱ {post.data.minutes} min</div>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <aside class="hp-sidebar">
-        <div class="hp-sidebar-card">
-          <div class="hp-sidebar-title">热门文章</div>
-          <div class="hp-hot-list">
-            {hotPosts.map((post, index) => (
-              <a class="hp-hot-item" href={`/blog/${getPostSlug(post)}/`}>
-                <div class:list={["hp-hot-num", `is-n${index + 1}`]}>{index + 1}</div>
-                <div class="hp-hot-body">
-                  <div class="hp-hot-title">{post.data.title}</div>
-                  <div class="hp-hot-reads" data-hot-reads={getPostSlug(post)}>{post.data.views} 阅读</div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </aside>
     </div>
-  </div>
+  </main>
+  <script is:inline type="module" src="/scripts/post-metrics.js"></script>
 </BaseLayout>
-
-<script is:inline>
-  // 中文注释：首页在客户端批量拉取 D1 聚合统计，覆盖构建期 frontmatter 的初始值。
-  const slugNodes = document.querySelectorAll("[data-post-slug]");
-  const slugs = Array.from(slugNodes)
-    .map((node) => (node instanceof HTMLElement ? node.dataset.postSlug : ""))
-    .filter(Boolean);
-
-  if (slugs.length) {
-    const uniqueSlugs = [...new Set(slugs)];
-    fetch(`/api/posts/metrics?slugs=${encodeURIComponent(uniqueSlugs.join(","))}`)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result?.ok || !result.metrics) return;
-        const metrics = result.metrics;
-
-        let totalViews = 0;
-        for (const slug of uniqueSlugs) {
-          const item = metrics[slug];
-          if (!item) continue;
-          totalViews += Number(item.views || 0);
-
-          const viewNodes = document.querySelectorAll(`[data-post-views="${slug}"]`);
-          for (const viewNode of viewNodes) {
-            if (!(viewNode instanceof HTMLElement)) continue;
-            if (viewNode.textContent?.includes("👁")) {
-              viewNode.textContent = `👁 ${Number(item.views || 0).toLocaleString("zh-CN")}`;
-            } else {
-              const icon = viewNode.querySelector("svg");
-              viewNode.textContent = Number(item.views || 0).toLocaleString("zh-CN");
-              if (icon) viewNode.prepend(icon);
-            }
-          }
-
-          const commentNodes = document.querySelectorAll(`[data-post-comments="${slug}"]`);
-          for (const commentNode of commentNodes) {
-            if (!(commentNode instanceof HTMLElement)) continue;
-            if (commentNode.textContent?.includes("💬")) {
-              commentNode.textContent = `💬 ${Number(item.comment_count || 0).toLocaleString("zh-CN")}`;
-            } else {
-              const icon = commentNode.querySelector("svg");
-              commentNode.textContent = Number(item.comment_count || 0).toLocaleString("zh-CN");
-              if (icon) commentNode.prepend(icon);
-            }
-          }
-
-          const hotReadsNodes = document.querySelectorAll(`[data-hot-reads="${slug}"]`);
-          for (const hotNode of hotReadsNodes) {
-            if (!(hotNode instanceof HTMLElement)) continue;
-            hotNode.textContent = `${Number(item.views || 0).toLocaleString("zh-CN")} 阅读`;
-          }
-        }
-
-        const totalViewsEl = document.querySelector("[data-total-views]");
-        if (totalViewsEl instanceof HTMLElement) {
-          const delta = totalViewsEl.querySelector(".hp-stat-delta");
-          totalViewsEl.textContent = totalViews.toLocaleString("zh-CN");
-          if (delta) totalViewsEl.append(" ", delta);
-        }
-      })
-      .catch(() => {});
-  }
-</script>

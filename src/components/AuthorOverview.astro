@@ -1,0 +1,29 @@
+---
+import { SITE_CONFIG } from "../config/site";
+
+interface Props {
+  postCount: number;
+  categoryCount: number;
+  totalViews: number;
+  totalWords: number;
+}
+
+const { postCount, categoryCount, totalViews, totalWords } = Astro.props;
+---
+
+<section class="author-overview" aria-labelledby="author-overview-title">
+  <div class="author-overview-avatar" aria-hidden="true">{SITE_CONFIG.avatarText}</div>
+  <div class="author-overview-main">
+    <div class="author-overview-heading">
+      <h1 id="author-overview-title">{SITE_CONFIG.author} 的技术博客</h1>
+      <a class="author-overview-about" href="/about/">关于作者</a>
+    </div>
+    <p>{SITE_CONFIG.description}</p>
+    <div class="author-overview-stats" role="list" aria-label="博客统计">
+      <span role="listitem"><strong>{postCount}</strong> 文章</span>
+      <span role="listitem"><strong>{categoryCount}</strong> 分类</span>
+      <span role="listitem" data-total-views><strong>{totalViews.toLocaleString("zh-CN")}</strong> 阅读</span>
+      <span role="listitem"><strong>{totalWords.toLocaleString("zh-CN")}</strong> 字</span>
+    </div>
+  </div>
+</section>

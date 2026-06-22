@@ -1,6 +1,19 @@
 import { getCollection } from "astro:content";
 
 export type ColorName = "blue" | "green" | "purple" | "amber" | "cyan" | "red";
+export interface CategoryChildStat {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export interface CategoryStat {
+  name: string;
+  slug: string;
+  count: number;
+  color: ColorName;
+  children: CategoryChildStat[];
+}
 const HIDE_ALL_POSTS = false;
 
 export async function getPublishedPosts() {
@@ -37,6 +50,51 @@ export function groupPostsBySection<T extends { data: { section: string } }>(pos
     groups[key].push(post);
     return groups;
   }, {});
+}
+
+// 中文注释：统一聚合分类名称、数量和代表色，供首页、归档页、标签页共用。
+export function getCategoryStats<T extends { data: { category: string; color?: ColorName; tags: string[] } }>(posts: T[]): CategoryStat[] {
+  const categories = new Map<string, CategoryStat>();
+  const tagCounts = new Map<string, number>();
+
+  // 中文注释：子目录链接进入全局标签页，因此数量也使用全站标签文章数，保证点击前后显示一致。
+  for (const post of posts) {
+    const uniqueTagSlugs = new Set(post.data.tags.map((tag) => slugifyTag(tag)).filter(Boolean));
+    for (const tagSlug of uniqueTagSlugs) tagCounts.set(tagSlug, (tagCounts.get(tagSlug) ?? 0) + 1);
+  }
+
+  for (const post of posts) {
+    const name = post.data.category.trim();
+    let category = categories.get(name);
+    if (!category) {
+      category = {
+        name,
+        slug: slugifyTag(name),
+        count: 0,
+        color: post.data.color ?? "blue",
+        children: []
+      };
+      categories.set(name, category);
+    }
+    category.count += 1;
+
+    // 中文注释：标签作为分类下的子目录；同一分类内只生成一个同名入口。
+    const uniqueTags = new Set(post.data.tags.map((tag) => tag.trim()).filter(Boolean));
+    for (const tag of uniqueTags) {
+      const tagSlug = slugifyTag(tag);
+      if (tagSlug === category.slug) continue;
+      const child = category.children.find((item) => item.slug === tagSlug);
+      if (!child) category.children.push({ name: tag, slug: tagSlug, count: tagCounts.get(tagSlug) ?? 1 });
+    }
+  }
+
+  // 中文注释：文章多的分类优先展示；数量相同时按中文名称稳定排序，避免构建后顺序漂移。
+  return [...categories.values()]
+    .map((category) => ({
+      ...category,
+      children: category.children.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "zh-CN"))
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "zh-CN"));
 }
 
 export function slugifyTag(tag: string) {

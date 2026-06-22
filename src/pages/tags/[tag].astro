@@ -1,32 +1,26 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import FeaturedPost from "../../components/FeaturedPost.astro";
-import PostCard from "../../components/PostCard.astro";
-import { getPublishedPosts, slugifyTag } from "../../lib/blog";
+import CategorySidebar from "../../components/CategorySidebar.astro";
+import PostList from "../../components/PostList.astro";
+import { getCategoryStats, getPublishedPosts, slugifyTag } from "../../lib/blog";
+import "../../styles/home.css";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  // 中文注释：首页分类入口复用标签页路由，所以静态路径需要同时覆盖 tags 和 category。
+  // 中文注释：同一路由同时承载标签和分类，保证首页分类侧栏可以直接复用现有静态页。
   const tags = [...new Set(posts.flatMap((post) => [...post.data.tags, post.data.category]))];
-
-  return tags.map((tag) => ({
-    params: { tag: slugifyTag(tag) },
-    props: { tag }
-  }));
+  return tags.map((tag) => ({ params: { tag: slugifyTag(tag) }, props: { tag } }));
 }
 
 const { tag } = Astro.props;
-const { tag: tagSlug } = Astro.params;
+const { tag: tagSlug = "" } = Astro.params;
 const posts = await getPublishedPosts();
-// 中文注释：标签页兼容分类筛选，避免首页分类入口进入后无法匹配文章。
+const categories = getCategoryStats(posts);
 const filteredPosts = posts.filter((post) => {
   const normalizedTags = post.data.tags.map((item) => slugifyTag(item));
   return normalizedTags.includes(tagSlug) || slugifyTag(post.data.category) === tagSlug;
 });
-const featuredTagPost = filteredPosts.find((post) => post.data.pinned) ?? filteredPosts[0];
-// 中文注释：Hermes Agent 标签页使用专属 PINNED 头图。
-const isHermesAgentTag = tagSlug === "hermes-agent";
-const featuredCoverImage = isHermesAgentTag ? "/images/hermes_agent_log.jpg" : undefined;
+const activeCategory = categories.find((category) => category.slug === tagSlug)?.name ?? tag;
 ---
 
 <BaseLayout
@@ -35,61 +29,21 @@ const featuredCoverImage = isHermesAgentTag ? "/images/hermes_agent_log.jpg" : u
   canonical={`/tags/${slugifyTag(tag)}/`}
   pageVariant="archive"
 >
-  <div class="page-wrap page-wrap--single">
-    <main>
-      <div class="hp-section-title" style="margin-bottom:12px;">
-        标签：{tag}
-        <span style="font-size:13px;font-weight:400;color:var(--text-muted);margin-left:auto;">共 {filteredPosts.length} 篇相关文章</span>
-      </div>
-      <p style="font-size:13px;color:var(--text-muted);margin:0 0 20px;">
-        围绕「{tag}」这个主题，把相关文章聚合到一个可索引、可浏览、可持续扩展的独立内容入口中。
-      </p>
-
-      {featuredTagPost && <FeaturedPost post={featuredTagPost} forcePinned={false} variant="archive" coverImage={featuredCoverImage} />}
-
-      <div class="hp-article-list">
-        {filteredPosts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
-      </div>
-    </main>
-  </div>
+  <main class="platform-page">
+    <div class="platform-layout">
+      <CategorySidebar categories={categories} totalPosts={posts.length} activeCategory={activeCategory} allHref="/blog/" />
+      <section class="platform-main article-feed" aria-labelledby="tag-title">
+        <header class="feed-header feed-header--large">
+          <div>
+            <span class="feed-eyebrow">TOPIC</span>
+            <h1 id="tag-title">{tag}</h1>
+            <p>围绕「{tag}」整理的相关文章</p>
+          </div>
+          <span>共 {filteredPosts.length} 篇</span>
+        </header>
+        <PostList posts={filteredPosts} emptyText={`暂时没有与「${tag}」相关的文章`} />
+      </section>
+    </div>
+  </main>
+  <script is:inline type="module" src="/scripts/post-metrics.js"></script>
 </BaseLayout>
-
-<script is:inline>
-  // 中文注释：标签页在客户端批量拉取 D1 统计，保证列表阅读和评论显示真实值。
-  const tagSlugNodes = document.querySelectorAll("[data-post-slug]");
-  const tagSlugs = Array.from(tagSlugNodes)
-    .map((node) => (node instanceof HTMLElement ? node.dataset.postSlug : ""))
-    .filter(Boolean);
-
-  if (tagSlugs.length) {
-    const uniqueTagSlugs = [...new Set(tagSlugs)];
-    fetch(`/api/posts/metrics?slugs=${encodeURIComponent(uniqueTagSlugs.join(","))}`)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result?.ok || !result.metrics) return;
-        const metrics = result.metrics;
-
-        for (const slug of uniqueTagSlugs) {
-          const item = metrics[slug];
-          if (!item) continue;
-
-          const viewNodes = document.querySelectorAll(`[data-post-views="${slug}"]`);
-          for (const viewNode of viewNodes) {
-            if (!(viewNode instanceof HTMLElement)) continue;
-            const icon = viewNode.querySelector("svg");
-            viewNode.textContent = Number(item.views || 0).toLocaleString("zh-CN");
-            if (icon) viewNode.prepend(icon);
-          }
-
-          const commentNodes = document.querySelectorAll(`[data-post-comments="${slug}"]`);
-          for (const commentNode of commentNodes) {
-            if (!(commentNode instanceof HTMLElement)) continue;
-            const icon = commentNode.querySelector("svg");
-            commentNode.textContent = Number(item.comment_count || 0).toLocaleString("zh-CN");
-            if (icon) commentNode.prepend(icon);
-          }
-        }
-      })
-      .catch(() => {});
-  }
-</script>

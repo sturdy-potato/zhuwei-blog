@@ -1,22 +1,24 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import FeaturedPost from "../../components/FeaturedPost.astro";
-import PostCard from "../../components/PostCard.astro";
-import { getPinnedPost, getPublishedPosts } from "../../lib/blog";
+import CategorySidebar from "../../components/CategorySidebar.astro";
+import PostList from "../../components/PostList.astro";
+import { getCategoryStats, getPostSlug, getPublishedPosts } from "../../lib/blog";
+import "../../styles/home.css";
 
 const posts = await getPublishedPosts();
-const pinned = await getPinnedPost();
-// 中文注释：归档页声明为文章集合页，方便搜索引擎理解列表页和文章 URL 的关系。
+const categories = getCategoryStats(posts);
+const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views);
+// 中文注释：归档页声明文章集合关系，搜索参数只做前端过滤，不改变 canonical。
 const archiveJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   name: "博客归档",
-  description: "按时间线浏览 ZhuWei 的全部文章，涵盖后端工程、网络协议、AI 自动化与数码折腾。",
+  description: "按时间浏览 ZhuWei 的全部技术文章。",
   url: new URL("/blog/", Astro.site).toString(),
   hasPart: posts.map((post) => ({
     "@type": "BlogPosting",
     headline: post.data.title,
-    url: new URL(`/blog/${post.id.replace(/\.(md|mdx)$/u, "")}/`, Astro.site).toString(),
+    url: new URL(`/blog/${getPostSlug(post)}/`, Astro.site).toString(),
     datePublished: post.data.pubDate.toISOString()
   }))
 };
@@ -24,64 +26,29 @@ const archiveJsonLd = {
 
 <BaseLayout
   title="博客归档"
-  description="按时间线浏览 ZhuWei 的全部文章，涵盖后端工程、网络协议、AI 自动化与数码折腾。"
+  description="按时间浏览 ZhuWei 的全部技术文章，涵盖后端工程、网络协议、AI 自动化与数码折腾。"
   activePath="/blog/"
   canonical="/blog/"
   jsonLd={archiveJsonLd}
   pageVariant="archive"
 >
-  <div class="page-wrap page-wrap--single">
-    <main>
-      <div class="hp-section-title" style="margin-bottom:20px;">
-        博客归档
-        <span style="font-size:13px;font-weight:400;color:var(--text-muted);margin-left:auto;">共 {posts.length} 篇文章</span>
-      </div>
-
-      {pinned && <FeaturedPost post={pinned} variant="archive" />}
-
-      <div class="hp-article-list">
-        {posts.map((post, index) => <PostCard post={post} isNew={index === 0} variant="archive" />)}
-      </div>
-    </main>
-  </div>
+  <main class="platform-page">
+    <div class="platform-layout">
+      <CategorySidebar categories={categories} totalPosts={posts.length} hotPosts={hotPosts} allHref="/blog/" />
+      <section class="platform-main article-feed" aria-labelledby="archive-title">
+        <header class="feed-header feed-header--large">
+          <div>
+            <span class="feed-eyebrow">ARCHIVE</span>
+            <h1 id="archive-title">博客归档</h1>
+            <p data-search-result>按发布时间浏览全部文章</p>
+          </div>
+          <span>共 {posts.length} 篇</span>
+        </header>
+        <PostList posts={posts} />
+        <div class="list-empty-state" data-search-empty hidden>没有找到匹配的文章，请更换关键词后重试</div>
+      </section>
+    </div>
+  </main>
+  <script is:inline type="module" src="/scripts/post-metrics.js"></script>
+  <script is:inline type="module" src="/scripts/archive-search.js"></script>
 </BaseLayout>
-
-<script is:inline>
-  // 中文注释：归档页在客户端批量拉取 D1 统计，覆盖 frontmatter 初始阅读与评论。
-  const archiveSlugNodes = document.querySelectorAll("[data-post-slug]");
-  const archiveSlugs = Array.from(archiveSlugNodes)
-    .map((node) => (node instanceof HTMLElement ? node.dataset.postSlug : ""))
-    .filter(Boolean);
-
-  if (archiveSlugs.length) {
-    const uniqueArchiveSlugs = [...new Set(archiveSlugs)];
-    fetch(`/api/posts/metrics?slugs=${encodeURIComponent(uniqueArchiveSlugs.join(","))}`)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result?.ok || !result.metrics) return;
-        const metrics = result.metrics;
-
-        for (const slug of uniqueArchiveSlugs) {
-          const item = metrics[slug];
-          if (!item) continue;
-
-          const viewNodes = document.querySelectorAll(`[data-post-views="${slug}"]`);
-          for (const viewNode of viewNodes) {
-            if (!(viewNode instanceof HTMLElement)) continue;
-            const icon = viewNode.querySelector("svg");
-            viewNode.textContent = Number(item.views || 0).toLocaleString("zh-CN");
-            if (icon) viewNode.prepend(icon);
-          }
-
-          const commentNodes = document.querySelectorAll(`[data-post-comments="${slug}"]`);
-          for (const commentNode of commentNodes) {
-            if (!(commentNode instanceof HTMLElement)) continue;
-            const icon = commentNode.querySelector("svg");
-            commentNode.textContent = Number(item.comment_count || 0).toLocaleString("zh-CN");
-            if (icon) commentNode.prepend(icon);
-          }
-        }
-      })
-      .catch(() => {});
-  }
-</script>

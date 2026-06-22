@@ -54,6 +54,10 @@
 
 注意：
 
+- 个人电脑和工作电脑共用同一个脚本，不需要分别维护两份
+- 新电脑首次使用时，先确认 `node -v` 不低于 `22.12.0`，再执行 `npm ci`
+- 新电脑首次发布前需执行 `npx wrangler login`，完成 Cloudflare 账号授权
+- 如果当前终端中的 Node 不合适，可用 `DEPLOY_NODE_BIN=/你的/node/bin npm run deploy:pages` 指定运行时
 - `deploy:pages:check` 对代码质量更稳，但如果项目当前存在类型问题，会中断发布
 - `deploy:pages` 只要求构建成功，更适合你现在这种“内容改完就发”的日常流程
 - `deploy:pages:build-only` 适合你先自测构建结果，再决定是否正式发版

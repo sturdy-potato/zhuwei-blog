@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostCard from "./PostCard.astro";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+  emptyText?: string;
+}
+
+const { posts, emptyText = "暂时没有符合条件的文章" } = Astro.props;
+// 中文注释：置顶文章只调整展示顺序，不改变全站统一的发布时间排序结果。
+const orderedPosts = [...posts].sort((a, b) => Number(b.data.pinned) - Number(a.data.pinned));
+const latestRegularPostId = posts.find((post) => !post.data.pinned)?.id;
+---
+
+{orderedPosts.length > 0 ? (
+  <div class="post-list" data-post-list>
+    {orderedPosts.map((post) => (
+      <PostCard post={post} pinned={post.data.pinned} isNew={post.id === latestRegularPostId} />
+    ))}
+  </div>
+) : (
+  <div class="list-empty-state">{emptyText}</div>
+)}

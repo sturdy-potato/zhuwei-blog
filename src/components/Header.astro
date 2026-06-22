@@ -1,5 +1,6 @@
 ---
 import { slugifyTag } from "../lib/blog";
+import { SITE_CONFIG } from "../config/site";
 
 interface Props {
   activePath?: string;
@@ -12,11 +13,10 @@ const { activePath, variant = "default", searchPlaceholder } = Astro.props;
 
 const navItems = [
   { href: "/", label: "首页" },
-  { href: "/blog/", label: "博客归档" },
-  { href: `/tags/${slugifyTag("建站笔记")}/`, label: "建站笔记" },
-  { href: `/tags/${slugifyTag("数码折腾")}/`, label: "数码折腾" },
+  { href: "/blog/", label: "博客" },
+  { href: `/tags/${slugifyTag("AI工程")}/`, label: "AI 工程" },
+  { href: `/tags/${slugifyTag("后端工程")}/`, label: "后端工程" },
   { href: `/tags/${slugifyTag("OpenClaw")}/`, label: "OpenClaw" },
-  { href: `/tags/${slugifyTag("Hermes Agent")}/`, label: "Hermes Agent" },
   { href: "/about/", label: "关于" }
 ];
 
@@ -35,7 +35,7 @@ function isActive(href: string) {
 
 <header class="site-header">
   <div class="nav-inner">
-    <a class="logo" href="/">ZHUWEI<span class="logo-accent">.BLOG</span></a>
+    <a class="logo" href="/" aria-label={`${SITE_CONFIG.name} 首页`}><span class="logo-mark" aria-hidden="true">ZW</span>ZHUWEI<span class="logo-accent">.BLOG</span></a>
     <nav aria-label="主导航">
       <ul class="nav-links">
         {navItems.map((item) => (
@@ -46,11 +46,15 @@ function isActive(href: string) {
       </ul>
     </nav>
     <div class="nav-actions">
-      <div class="search-box">
+      <form class="search-box" action="/blog/" method="get" role="search">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <span>{searchPlaceholder ?? "搜索文章、关键词..."}</span>
-        <kbd class="search-kbd">⌘K</kbd>
-      </div>
+        <label class="sr-only" for="site-search">搜索文章</label>
+        <input id="site-search" name="q" type="search" placeholder={searchPlaceholder ?? "搜索文章、关键词..."} autocomplete="off" />
+        <button type="submit">搜索</button>
+      </form>
+      <a class="icon-btn nav-rss" href={SITE_CONFIG.rss} aria-label="RSS 订阅" title="RSS 订阅">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 11a8 8 0 0 1 8 8"/><path d="M5 5a14 14 0 0 1 14 14"/><circle cx="5" cy="19" r="1" fill="currentColor"/></svg>
+      </a>
       <button class="icon-btn" data-theme-toggle aria-label="主题：跟随系统，点击切换" title="主题：跟随系统（点击切换）">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>

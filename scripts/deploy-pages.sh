@@ -10,8 +10,8 @@ cd "$REPO_ROOT"
 
 # 中文注释：固定 Pages 项目名，避免每次手动输入时拼错。
 PROJECT_NAME="zhuwei-blog"
-# 中文注释：优先复用工作区自带的 Node 运行时，避免本机全局 Node 版本不满足 Astro 要求。
-CODEX_NODE_BIN="/Users/zhuwei/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin"
+# 中文注释：不同电脑的 Node 安装目录可能不同；需要指定时传 DEPLOY_NODE_BIN，不在脚本里写死个人目录。
+DEPLOY_NODE_BIN="${DEPLOY_NODE_BIN:-}"
 
 USE_CHECK="false"
 BUILD_ONLY="false"
@@ -33,11 +33,13 @@ for arg in "$@"; do
 done
 
 resolve_node_bin() {
-  if [ -x "$CODEX_NODE_BIN/node" ]; then
-    echo "$CODEX_NODE_BIN"
+  # 中文注释：工作电脑若有多套 Node，可用 DEPLOY_NODE_BIN 明确指定本次部署使用的版本。
+  if [ -n "$DEPLOY_NODE_BIN" ] && [ -x "$DEPLOY_NODE_BIN/node" ]; then
+    echo "$DEPLOY_NODE_BIN"
     return 0
   fi
 
+  # 中文注释：默认复用当前终端里已经生效的 Node，兼容 nvm、Homebrew、Volta 等常见安装方式。
   if command -v node >/dev/null 2>&1; then
     local major
     local minor
@@ -80,7 +82,7 @@ DEPLOY_MESSAGE="manual deploy from ${GIT_BRANCH}"
 
 if [ -z "$NODE_BIN" ]; then
   echo "未找到可用的 Node.js 运行时。Astro 6 需要 Node >= 22.12.0。"
-  echo "建议先安装 Node 22/24，或在 Codex 桌面环境里执行该脚本。"
+  echo "请先在当前终端启用 Node 22/24，或通过 DEPLOY_NODE_BIN 指定 Node 的 bin 目录。"
   exit 1
 fi
 
@@ -88,6 +90,13 @@ fi
 export PATH="$NODE_BIN:$PATH"
 
 echo "使用 Node: $(node -v)"
+
+# 中文注释：部署必须使用仓库锁定的 Astro/Wrangler，缺少依赖时直接提示，避免 npx 临时下载不同版本。
+if [ ! -x "node_modules/.bin/astro" ] || [ ! -x "node_modules/.bin/wrangler" ]; then
+  echo "项目依赖尚未安装，请先执行 npm ci（锁文件变化时可执行 npm install）。"
+  exit 1
+fi
+
 echo "开始构建项目..."
 npm run build
 
@@ -103,13 +112,14 @@ fi
 
 echo "开始发布到 Cloudflare Pages 项目: $PROJECT_NAME"
 if [ -n "$GIT_HASH" ]; then
-  npx wrangler pages deploy dist \
+  # 中文注释：npm exec 只调用项目本地 Wrangler；工作电脑首次发布前需先执行 npx wrangler login。
+  npm exec -- wrangler pages deploy dist \
     --project-name "$PROJECT_NAME" \
     --branch "$GIT_BRANCH" \
     --commit-hash "$GIT_HASH" \
     --commit-message "$DEPLOY_MESSAGE"
 else
-  npx wrangler pages deploy dist \
+  npm exec -- wrangler pages deploy dist \
     --project-name "$PROJECT_NAME" \
     --branch "$GIT_BRANCH" \
     --commit-message "$DEPLOY_MESSAGE"

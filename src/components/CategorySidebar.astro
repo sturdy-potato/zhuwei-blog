@@ -1,0 +1,72 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { CategoryStat } from "../lib/blog";
+import { formatNumber, getPostSlug } from "../lib/blog";
+
+interface Props {
+  categories: CategoryStat[];
+  totalPosts: number;
+  activeCategory?: string;
+  hotPosts?: CollectionEntry<"blog">[];
+  allHref?: string;
+}
+
+const { categories, totalPosts, activeCategory = "", hotPosts = [], allHref = "/" } = Astro.props;
+---
+
+<aside class="category-sidebar" aria-label="文章分类">
+  <section class="category-panel">
+    <h2 class="category-title">分类专栏</h2>
+    <nav class="category-nav" aria-label="分类专栏">
+      <a class:list={["category-item", !activeCategory && "is-active"]} href={allHref} aria-current={!activeCategory ? "page" : undefined}>
+        <span class="category-icon category-icon--all" aria-hidden="true">全</span>
+        <span class="category-name">全部文章</span>
+        <span class="category-count">{totalPosts} 篇</span>
+      </a>
+      {categories.map((category) => {
+        const isCategoryActive = activeCategory === category.name || activeCategory === category.slug;
+        const hasActiveChild = category.children.some((child) => activeCategory === child.name || activeCategory === child.slug);
+        return (
+          <details class:list={["category-group", (isCategoryActive || hasActiveChild) && "is-active"]} open={isCategoryActive || hasActiveChild}>
+            <summary class="category-summary">
+              <span class:list={["category-icon", `is-${category.color}`]} aria-hidden="true">{category.name.slice(0, 1)}</span>
+              <span class="category-name">{category.name}</span>
+              <span class="category-count">{category.count} 篇</span>
+              <svg class="category-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+            </summary>
+            <div class="category-children">
+              <a class:list={["category-child", "is-all", isCategoryActive && "is-active"]} href={`/tags/${category.slug}/`} aria-current={isCategoryActive ? "page" : undefined}>
+                <span>全部文章</span><span class="category-count">{category.count} 篇</span>
+              </a>
+              {category.children.map((child) => {
+                const isChildActive = activeCategory === child.name || activeCategory === child.slug;
+                return (
+                  <a class:list={["category-child", isChildActive && "is-active"]} href={`/tags/${child.slug}/`} aria-current={isChildActive ? "page" : undefined}>
+                    <span>{child.name}</span><span class="category-count">{child.count} 篇</span>
+                  </a>
+                );
+              })}
+            </div>
+          </details>
+        );
+      })}
+    </nav>
+  </section>
+
+  {hotPosts.length > 0 && (
+    <section class="category-panel hot-panel" aria-label="热门文章">
+      <h2 class="category-title">热门文章</h2>
+      <ol class="platform-hot-list">
+        {hotPosts.map((post, index) => (
+          <li data-hot-item data-hot-slug={getPostSlug(post)}>
+            <span class:list={["platform-hot-rank", index < 3 && "is-top"]}>{index + 1}</span>
+            <a href={`/blog/${getPostSlug(post)}/`}>
+              <strong>{post.data.title}</strong>
+              <span data-hot-views={getPostSlug(post)}><span>{formatNumber(post.data.views)}</span> 阅读</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+</aside>

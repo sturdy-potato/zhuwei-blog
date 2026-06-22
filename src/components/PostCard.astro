@@ -1,63 +1,43 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatDate, formatNumber, getPostSlug } from "../lib/blog";
+import { formatDate, formatNumber, getPostSlug, slugifyTag } from "../lib/blog";
 
 interface Props {
   post: CollectionEntry<"blog">;
+  pinned?: boolean;
   isNew?: boolean;
-  variant?: "default" | "archive";
+  showCategory?: boolean;
 }
 
-const { post, isNew = false, variant = "default" } = Astro.props;
+const { post, pinned = false, isNew = false, showCategory = true } = Astro.props;
 const { data } = post;
-
-function iconClass(color: string | undefined) {
-  if (color === "green" || color === "purple" || color === "amber" || color === "cyan" || color === "red") return `is-${color}`;
-  return "is-blue";
-}
-
-function getTitleBadgeChar(title: string) {
-  const trimmed = title.trim();
-  const firstVisibleChar = trimmed.match(/[^\s]/u)?.[0] ?? "";
-
-  if (/[\p{Script=Han}]/u.test(firstVisibleChar)) {
-    return trimmed.match(/[\p{Script=Han}]/u)?.[0] ?? "文";
-  }
-  if (/[A-Za-z]/.test(firstVisibleChar)) {
-    return firstVisibleChar.toUpperCase();
-  }
-
-  const fallbackHan = trimmed.match(/[\p{Script=Han}]/u)?.[0];
-  if (fallbackHan) return fallbackHan;
-  const fallbackLatin = trimmed.match(/[A-Za-z]/)?.[0];
-  if (fallbackLatin) return fallbackLatin.toUpperCase();
-  return "•";
-}
+const slug = getPostSlug(post);
+const searchText = [data.title, data.excerpt, data.category, ...data.tags].join(" ").toLocaleLowerCase("zh-CN");
 ---
 
-<a class="hp-article-card" href={`/blog/${getPostSlug(post)}/`} data-post-slug={getPostSlug(post)}>
-  <div class:list={["hp-article-icon", iconClass(data.color)]}>{getTitleBadgeChar(data.title)}</div>
-  <div class="hp-article-info">
-    <div class="hp-article-meta">
-      <span class:list={["hp-cat-tag", `hp-cat-${data.color || "blue"}`]}>{data.category}</span>
-      <span class="hp-article-date">{formatDate(data.pubDate)}</span>
-      {isNew && <span class="hp-article-new">NEW</span>}
+<article class="post-list-item" data-post-slug={slug} data-search-text={searchText}>
+  <div class="post-list-heading">
+    <div class="post-list-badges">
+      {pinned && <span class="post-status-badge is-pinned">置顶</span>}
+      {isNew && <span class="post-status-badge is-new">最新</span>}
     </div>
-    <div class="hp-article-title">{data.title}</div>
-    <div class="hp-article-desc">{data.excerpt}</div>
-    <div class="hp-article-footer">
-      <div class="hp-article-stat" data-post-views={getPostSlug(post)}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        {formatNumber(data.views)}
-      </div>
-      <div class="hp-article-stat" data-post-comments={getPostSlug(post)}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        {formatNumber(data.comments)}
-      </div>
-      <div class="hp-article-stat">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        {data.minutes} min
-      </div>
-    </div>
+    <h2><a href={`/blog/${slug}/`}>{data.title}</a></h2>
   </div>
-</a>
+  <p class="post-list-excerpt">{data.excerpt}</p>
+  <div class="post-list-meta">
+    {showCategory && <a class:list={["post-category", `is-${data.color || "blue"}`]} href={`/tags/${slugifyTag(data.category)}/`}>{data.category}</a>}
+    <time datetime={data.pubDate.toISOString()}>{formatDate(data.pubDate)}</time>
+    <span class="post-list-stat" data-post-views={slug}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>{formatNumber(data.views)}</span> 阅读
+    </span>
+    <span class="post-list-stat" data-post-comments={slug}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>{formatNumber(data.comments)}</span> 评论
+    </span>
+    <span class="post-list-stat">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        {data.minutes} 分钟
+    </span>
+  </div>
+</article>
