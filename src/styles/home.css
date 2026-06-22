@@ -11,7 +11,8 @@
   position: sticky; top: calc(var(--header-height) + 16px); max-height: calc(100vh - var(--header-height) - 32px);
   padding-right: 2px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; scrollbar-width: thin;
 }
-.category-panel { overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+/* 中文注释：侧栏面板禁止被 flex 压缩；内容超高时交给外层侧栏滚动，避免下方分类被 overflow 裁掉。 */
+.category-panel { flex: 0 0 auto; overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .category-title { padding: 18px 20px 12px; color: var(--text-primary); font-size: 16px; line-height: 1.4; }
 .category-nav { padding: 0 10px 12px; }
 .category-item {

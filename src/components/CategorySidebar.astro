@@ -12,6 +12,11 @@ interface Props {
 }
 
 const { categories, totalPosts, activeCategory = "", hotPosts = [], allHref = "/" } = Astro.props;
+// 中文注释：同一个标签可能属于多个分类，侧栏只选择第一个匹配分类展开，避免初始状态同时打开多个长列表。
+const exactCategoryIndex = categories.findIndex((category) => activeCategory === category.name || activeCategory === category.slug);
+const activeGroupIndex = exactCategoryIndex >= 0
+  ? exactCategoryIndex
+  : categories.findIndex((category) => category.children.some((child) => activeCategory === child.name || activeCategory === child.slug));
 ---
 
 <aside class="category-sidebar" aria-label="文章分类">
@@ -23,11 +28,12 @@ const { categories, totalPosts, activeCategory = "", hotPosts = [], allHref = "/
         <span class="category-name">全部文章</span>
         <span class="category-count">{totalPosts} 篇</span>
       </a>
-      {categories.map((category) => {
+      {categories.map((category, categoryIndex) => {
         const isCategoryActive = activeCategory === category.name || activeCategory === category.slug;
         const hasActiveChild = category.children.some((child) => activeCategory === child.name || activeCategory === child.slug);
+        const isGroupActive = categoryIndex === activeGroupIndex && (isCategoryActive || hasActiveChild);
         return (
-          <details class:list={["category-group", (isCategoryActive || hasActiveChild) && "is-active"]} open={isCategoryActive || hasActiveChild}>
+          <details class:list={["category-group", isGroupActive && "is-active"]} open={isGroupActive}>
             <summary class="category-summary">
               <span class:list={["category-icon", `is-${category.color}`]} aria-hidden="true">{category.name.slice(0, 1)}</span>
               <span class="category-name">{category.name}</span>
@@ -39,7 +45,7 @@ const { categories, totalPosts, activeCategory = "", hotPosts = [], allHref = "/
                 <span>全部文章</span><span class="category-count">{category.count} 篇</span>
               </a>
               {category.children.map((child) => {
-                const isChildActive = activeCategory === child.name || activeCategory === child.slug;
+                const isChildActive = isGroupActive && (activeCategory === child.name || activeCategory === child.slug);
                 return (
                   <a class:list={["category-child", isChildActive && "is-active"]} href={`/tags/${child.slug}/`} aria-current={isChildActive ? "page" : undefined}>
                     <span>{child.name}</span><span class="category-count">{child.count} 篇</span>
@@ -70,3 +76,20 @@ const { categories, totalPosts, activeCategory = "", hotPosts = [], allHref = "/
     </section>
   )}
 </aside>
+
+<script>
+  // 中文注释：分类使用手风琴交互，打开当前分类时关闭同一侧栏中的其他分类，避免多个长子目录互相挤压。
+  document.querySelectorAll<HTMLElement>(".category-nav").forEach((nav) => {
+    if (nav.dataset.accordionReady === "true") return;
+    nav.dataset.accordionReady = "true";
+
+    nav.querySelectorAll<HTMLDetailsElement>(".category-group").forEach((group) => {
+      group.addEventListener("toggle", () => {
+        if (!group.open) return;
+        nav.querySelectorAll<HTMLDetailsElement>(".category-group[open]").forEach((otherGroup) => {
+          if (otherGroup !== group) otherGroup.open = false;
+        });
+      });
+    });
+  });
+</script>
