@@ -13,10 +13,6 @@ interface Props {
 
 const { post, headings = [] } = Astro.props;
 const posts = await getPublishedPosts();
-const currentIndex = posts.findIndex((item) => item.id === post.id);
-const prevPost = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
-const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
-const allTags = [...new Set(posts.flatMap((item) => item.data.tags))];
 const relatedPosts = posts.filter((item) => item.id !== post.id).slice(0, 4);
 const postUrl = new URL(`/blog/${getPostSlug(post)}/`, Astro.site).toString();
 const imageUrl = new URL("/og-default.svg", Astro.site).toString();
@@ -65,7 +61,8 @@ const articleJsonLd = {
 >
   <main class="article-page-main">
     <div class="article-layout">
-      <div>
+      <!-- 中文注释：正文保持在 DOM 前方，桌面端仅通过网格区域把辅助侧栏放到左边，保证移动端和键盘访问顺序一致。 -->
+      <div class="article-main-column">
         <article class="article-shell">
           <header class="article-head">
             <div class="article-meta">
@@ -114,7 +111,7 @@ const articleJsonLd = {
           />
         </article>
       </div>
-      <Sidebar posts={posts} tags={allTags} headings={headings} showTagCloud={true} showTimeline={true} variant="article" />
+      <Sidebar posts={posts} headings={headings} variant="article" />
     </div>
   </main>
   <script type="module" src="/scripts/copy-code.js"></script>

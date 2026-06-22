@@ -4,7 +4,7 @@
 }
 .article-layout {
   max-width: 1140px; margin: 0 auto; padding: 32px 24px 80px;
-  display: grid; grid-template-columns: 1fr 300px;
+  display: grid; grid-template-columns: 300px minmax(0, 1fr);
   gap: 28px; align-items: start;
 }
 .article-layout.article-layout--single {
@@ -601,8 +601,8 @@
 /* 中文注释：以下规则统一覆盖旧详情视觉，保留原有 Markdown、互动和评论功能结构。 */
 .article-page-main { min-height: calc(100vh - var(--header-height)); background: var(--page-bg); }
 .article-layout {
-  max-width: 1280px; padding: 20px 24px 64px;
-  grid-template-columns: minmax(0, 1fr) 280px; gap: 16px;
+  max-width: 1520px; padding: 20px 24px 64px;
+  grid-template-columns: 286px minmax(0, 1fr); gap: 16px;
 }
 .article-layout.article-layout--single { grid-template-columns: minmax(0, 900px); }
 .article-shell { border-radius: var(--radius-lg); border-color: var(--border); box-shadow: var(--shadow-sm); }
@@ -625,8 +625,55 @@
 .article-content pre { max-width: 100%; }
 .article-content img { border-radius: var(--radius-lg); }
 .article-content table { display: block; max-width: 100%; overflow-x: auto; }
-.article-sidebar { position: sticky; top: calc(var(--header-height) + 16px); max-height: calc(100vh - var(--header-height) - 32px); overflow: auto; }
-.article-sidebar .widget { background: var(--surface); box-shadow: var(--shadow-sm); }
+.article-main-column { min-width: 0; grid-column: 2; grid-row: 1; }
+/* 中文注释：左侧信息栏整体吸顶并可滚动，长目录或较多推荐文章不会撑破视口。 */
+.article-sidebar {
+  grid-column: 1; grid-row: 1;
+  position: sticky; top: calc(var(--header-height) + 16px);
+  max-height: calc(100vh - var(--header-height) - 32px); overflow-x: hidden; overflow-y: auto;
+  padding-right: 3px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent;
+}
+.article-sidebar::-webkit-scrollbar { width: 5px; }
+.article-sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+.article-sidebar .widget { flex: 0 0 auto; background: var(--surface); box-shadow: var(--shadow-sm); }
+.article-author-card { padding: 20px; }
+.article-author-profile { display: flex; align-items: center; gap: 12px; }
+.article-author-avatar {
+  width: 52px; height: 52px; flex: 0 0 52px; display: grid; place-items: center;
+  border-radius: 50%; background: linear-gradient(145deg, #ff795d, #e64023); color: #fff;
+  font-size: 15px; font-weight: 800;
+}
+.article-author-name { color: var(--text-primary); font-size: 15px; font-weight: 700; text-decoration: none; }
+.article-author-name:hover { color: var(--brand); }
+.article-author-profile p { margin: 4px 0 0; color: var(--text-muted); font-size: 12px; }
+.article-author-description { margin: 15px 0; color: var(--text-secondary); font-size: 12.5px; line-height: 1.7; }
+.article-author-stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 13px 0; background: var(--surface-2); }
+.article-author-stats span { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; }
+.article-author-stats span + span { border-left: 1px solid var(--border); }
+.article-author-stats strong { margin-bottom: 2px; color: var(--text-primary); font-size: 14px; font-weight: 700; }
+.article-author-about {
+  display: flex; justify-content: center; margin-top: 14px; padding: 8px 12px;
+  border: 1px solid var(--brand); border-radius: 18px; color: var(--brand); font-size: 13px; text-decoration: none;
+}
+.article-author-about:hover { background: var(--brand); color: #fff; }
+.article-hot-list { display: flex; flex-direction: column; gap: 13px; margin: 0; padding: 2px 18px 18px; list-style: none; }
+.article-hot-list li { display: flex; align-items: flex-start; gap: 10px; }
+.article-hot-rank { flex: 0 0 20px; color: var(--text-muted); font-size: 13px; font-weight: 700; line-height: 1.5; text-align: center; }
+.article-hot-rank.is-top { color: var(--brand); }
+.article-hot-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.article-hot-copy a {
+  display: -webkit-box; overflow: hidden; color: var(--text-secondary); font-size: 12.5px; line-height: 1.55;
+  text-decoration: none; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+}
+.article-hot-copy a:hover { color: var(--brand); }
+.article-hot-copy small, .article-category-list small { color: var(--text-muted); font-size: 11px; }
+.article-category-list { display: grid; gap: 2px; padding: 0 12px 14px; }
+.article-category-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 7px;
+  border-radius: 5px; color: var(--text-secondary); font-size: 12.5px; text-decoration: none;
+}
+.article-category-list a:hover { background: var(--brand-soft); color: var(--brand); }
+.article-toc-card .toc { max-height: 360px; overflow-y: auto; scrollbar-width: thin; }
 .toc-item { border-radius: 4px; }
 .toc-item:hover, .toc-item.active { background: var(--brand-soft); color: var(--brand); }
 .article-related { border-color: var(--border); border-radius: var(--radius-md); background: var(--surface-2); }
@@ -641,6 +688,8 @@
 
 @media (max-width: 900px) {
   .article-layout { grid-template-columns: 1fr; padding: 14px 12px 48px; }
+  /* 中文注释：窄屏恢复自然文档顺序，优先呈现正文，再展示作者和推荐信息。 */
+  .article-main-column, .article-sidebar { grid-column: 1; grid-row: auto; }
   .article-sidebar { position: static; max-height: none; overflow: visible; }
   .article-head { padding: 28px 24px 0; }
   .article-content { padding: 0 24px 30px; }

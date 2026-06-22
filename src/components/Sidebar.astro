@@ -1,41 +1,88 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatDate, getPostSlug } from "../lib/blog";
+import { SITE_CONFIG } from "../config/site";
+import { formatDate, formatNumber, getCategoryStats, getPostSlug } from "../lib/blog";
 import Toc from "./Toc.astro";
 
 interface Props {
   variant?: "default" | "article" | "archive";
   posts?: CollectionEntry<"blog">[];
-  tags?: string[];
   headings?: { depth: number; slug: string; text: string }[];
-  showTagCloud?: boolean;
-  showTimeline?: boolean;
 }
 
 const {
   variant = "default",
   posts = [],
-  tags = [],
   headings = [],
-  showTagCloud = false,
-  showTimeline = false,
 } = Astro.props;
 
 const recentPosts = posts.slice(0, 6);
-const timelinePosts = posts.slice(0, 4);
-const cloudTags = tags.slice(0, 18);
+// 中文注释：详情页侧栏只展示站点已有数据，避免为了贴近参考图而放置无效的关注、私信入口。
+const hotPosts = [...posts].sort((a, b) => b.data.views - a.data.views).slice(0, 5);
+const categories = getCategoryStats(posts).slice(0, 8);
+const totalViews = posts.reduce((sum, item) => sum + item.data.views, 0);
+// 中文注释：字数统计与首页、关于页保持同一口径，避免同一份内容在不同页面显示不同结果。
+const totalWords = posts.reduce((sum, item) => sum + (item.body ?? "").split(/\s+/u).filter(Boolean).length, 0);
 
 ---
 
 <aside class:list={["sidebar", variant === "article" && "article-sidebar"]}>
-  {variant === "article" && headings.length > 0 ? (
-    <section class="widget" aria-label="文章目录">
-      <div class="widget-header">
-        <span class="widget-header-dot"></span>
-        文章目录
-      </div>
-      <Toc headings={headings} />
-    </section>
+  {variant === "article" ? (
+    <>
+      <section class="widget article-author-card" aria-label="博主信息">
+        <div class="article-author-profile">
+          <span class="article-author-avatar" aria-hidden="true">{SITE_CONFIG.avatarText}</span>
+          <div>
+            <a class="article-author-name" href="/about/">{SITE_CONFIG.author} 的技术博客</a>
+            <p>{SITE_CONFIG.role}</p>
+          </div>
+        </div>
+        <p class="article-author-description">{SITE_CONFIG.description}</p>
+        <div class="article-author-stats" aria-label="博客统计">
+          <span><strong>{posts.length}</strong>文章</span>
+          <span><strong>{formatNumber(totalViews)}</strong>阅读</span>
+          <span><strong>{formatNumber(totalWords)}</strong>字数</span>
+        </div>
+        <a class="article-author-about" href="/about/">查看作者介绍</a>
+      </section>
+
+      {hotPosts.length > 0 && (
+        <section class="widget article-side-card" aria-label="热门文章">
+          <div class="widget-header"><span class="widget-header-dot"></span>热门文章</div>
+          <ol class="article-hot-list">
+            {hotPosts.map((item, index) => (
+              <li>
+                <span class:list={["article-hot-rank", index < 3 && "is-top"]}>{index + 1}</span>
+                <span class="article-hot-copy">
+                  <a href={`/blog/${getPostSlug(item)}/`}>{item.data.title}</a>
+                  <small>{formatNumber(item.data.views)} 阅读</small>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {categories.length > 0 && (
+        <section class="widget article-side-card" aria-label="分类专栏">
+          <div class="widget-header"><span class="widget-header-dot"></span>分类专栏</div>
+          <div class="article-category-list">
+            {categories.map((category) => (
+              <a href={`/tags/${category.slug}/`}>
+                <span>{category.name}</span><small>{category.count} 篇</small>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {headings.length > 0 && (
+        <section class="widget article-toc-card" aria-label="文章目录">
+          <div class="widget-header"><span class="widget-header-dot"></span>文章目录</div>
+          <Toc headings={headings} />
+        </section>
+      )}
+    </>
   ) : recentPosts.length > 0 && (
     <section class="widget" aria-label="最新文章">
       <div class="widget-header">
