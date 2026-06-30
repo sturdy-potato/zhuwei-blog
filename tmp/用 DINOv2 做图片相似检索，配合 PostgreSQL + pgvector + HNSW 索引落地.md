@@ -18,7 +18,7 @@ tags:
   icon: "Image"
   minutes: 7
   views: 0
-  comments: 0
+  comments: 0 1
   draft: false
 
 ---

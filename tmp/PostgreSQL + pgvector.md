@@ -15,7 +15,7 @@ tags:
 * Milvus
 * Qdrant
   color: "purple"
-  icon: "Database"
+  icon: "Database" 1
   minutes: 8
   views: 0
   comments: 0
