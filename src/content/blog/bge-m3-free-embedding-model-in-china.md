@@ -1,25 +1,22 @@
 ---
-
 title: "开源 Embedding 模型选型：BGE-M3 的适用场景与评估方法"
 excerpt: "BGE-M3 是一个适合优先评估的开源 embedding 模型。它支持中文、多语言、长文本和多种检索方式，适合用于 RAG、知识库检索和中英文混合语义搜索。"
 pubDate: 2026-04-24
 category: "向量检索"
 section: "AI工程"
 tags:
-
-* AI
-* Embedding
-* 向量模型
-* BGE-M3
-* RAG
-* 检索
-  color: "blue"
-  icon: "Cpu"
-  minutes: 6
-  views: 0
-  comments: 0
-  draft: false
-
+  - AI
+  - Embedding
+  - 向量模型
+  - BGE-M3
+  - RAG
+  - 检索
+color: "blue"
+icon: "Cpu"
+minutes: 6
+views: 0
+comments: 0
+draft: false
 ---
 
 在做知识库检索时，Embedding 模型的选择不能只看“能不能免费用”。
