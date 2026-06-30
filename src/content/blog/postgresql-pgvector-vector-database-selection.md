@@ -1,26 +1,23 @@
 ---
-
 title: "为什么我先用 PostgreSQL + pgvector 做向量库，而不是直接上专业向量数据库"
 excerpt: "pgvector 不是所有向量检索场景的最优解，但在中小规模 RAG、图片相似检索和业务强过滤场景中，它可以用更低的工程复杂度完成向量存储和相似度检索。"
 pubDate: 2026-04-26
 category: "向量检索"
 section: "AI工程"
 tags:
-
-* AI
-* 向量数据库
-* PostgreSQL
-* pgvector
-* RAG
-* Milvus
-* Qdrant
-  color: "purple"
-  icon: "Database" 1
-  minutes: 8
-  views: 0
-  comments: 0
-  draft: false
-
+  - "AI"
+  - "向量数据库"
+  - "PostgreSQL"
+  - "pgvector"
+  - "RAG"
+  - "Milvus"
+  - "Qdrant"
+color: "purple"
+icon: "Database"
+minutes: 8
+views: 0
+comments: 0
+draft: false
 ---
 
 在做 RAG、图片相似检索、商品图查重时，很容易遇到一个选型问题：

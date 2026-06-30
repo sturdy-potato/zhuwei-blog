@@ -1,26 +1,23 @@
 ---
-
 title: "用 DINOv2 做图片相似检索：从图片向量化到 pgvector 入库"
 excerpt: "DINOv2 可以把图片转换成向量，用于商品图相似检索、图片查重和以图搜图。本文记录一个基于 DINOv2、PostgreSQL、pgvector 和 HNSW 索引的最小落地方案。"
 pubDate: 2026-04-25
 category: "向量检索"
 section: "AI工程"
 tags:
-
-* AI
-* DINOv2
-* 图片检索
-* 向量检索
-* pgvector
-* PostgreSQL
-* HNSW
-  color: "green"
-  icon: "Image"
-  minutes: 7
-  views: 0
-  comments: 0 1
-  draft: false
-
+  - "AI"
+  - "DINOv2"
+  - "图片检索"
+  - "向量检索"
+  - "pgvector"
+  - "PostgreSQL"
+  - "HNSW"
+color: "green"
+icon: "Image"
+minutes: 7
+views: 0
+comments: 0
+draft: false
 ---
 
 最近在做图片相似检索时，我把问题拆成了两个部分：
@@ -100,7 +97,6 @@ DINOv2 是 Meta AI 发布的自监督视觉模型。
   -> 图片向量化
   -> 存储向量和图片信息
   -> PostgreSQL + pgvector + HNSW 索引
-
 
 图片搜索流程：
 
@@ -503,14 +499,12 @@ DINOv2 不是万能图片理解模型。
   -> DINOv2 提取向量
   -> 写入 PostgreSQL + pgvector
 
-
 图片检索服务
   -> 接收查询图片
   -> DINOv2 提取查询向量
   -> pgvector 向量召回
   -> 业务条件过滤
   -> 返回相似图片
-
 
 离线评估任务
   -> 抽样查询

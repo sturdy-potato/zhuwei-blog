@@ -1,4 +1,24 @@
-# 为什么我最终选择服务器部署 BAAI/bge-reranker-v2-m3 做 RAG 重排
+---
+title: "为什么我最终选择服务器部署 BAAI/bge-reranker-v2-m3 做 RAG 重排"
+excerpt: "向量召回只能找出可能相关的内容，reranker 才能把最适合给大模型看的片段排到前面。本文整理 BAAI/bge-reranker-v2-m3 的定位、适用场景和部署取舍。"
+pubDate: 2026-06-26
+category: "向量检索"
+section: "AI工程"
+tags:
+  - "AI"
+  - "RAG"
+  - "ReRank"
+  - "BGE"
+  - "bge-reranker-v2-m3"
+  - "向量检索"
+  - "知识库"
+color: "purple"
+icon: "ListFilter"
+minutes: 7
+views: 0
+comments: 0
+draft: false
+---
 
 最近在做知识库问答和 RAG 检索链路时，我遇到一个很典型的问题：向量召回能把“可能相关”的内容找出来，但它不一定能把“最应该给大模型看的内容”排在最前面。
 
@@ -168,7 +188,7 @@ max_length：512 或 1024
 
 对于一个知识库问答系统来说，LLM 决定了回答表达能力，embedding 决定了能不能召回候选资料，而 reranker 决定了最终交给 LLM 的资料质量。
 
-如果把 RAG 比作查资料写答案： 1
+如果把 RAG 比作查资料写答案：
 
 ```text
 Embedding 像是先从书架上找出 20 本可能相关的书；
